@@ -3,6 +3,10 @@ uuid = "2ab4f33b-e537-4f3b-bd4c-4061373d8230"
 authors = ["Hiroyuki Okamura"]
 version = "0.1.0"
 
+[deps]
+DD = "dbd003b0-366b-4bd7-bab8-1704c0e14406"
+UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
 [compat]
 julia = "1"
 
