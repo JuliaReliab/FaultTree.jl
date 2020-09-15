@@ -1,7 +1,7 @@
 name = "FaultTree"
 uuid = "2ab4f33b-e537-4f3b-bd4c-4061373d8230"
 authors = ["Hiroyuki Okamura"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 DD = "dbd003b0-366b-4bd7-bab8-1704c0e14406"

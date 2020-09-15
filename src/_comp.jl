@@ -11,8 +11,8 @@ eval
 """
 
 function fteval(f::AbstractFaultTreeNode, env::Dict{Symbol,Tx}) where Tx
-    bdd, = bdd(f)
-    return fteval(bdd, env)
+    top, = bdd(f)
+    return fteval(top, env)
 end
 
 function fteval(f::AbstractDDNode{Tv,Ti}, env::Dict{Symbol,Tx}) where {Tv,Ti,Tx}

@@ -237,3 +237,22 @@ end
     println(result)
     @test isapprox(result, [exp(-2*lam1-lam2), -2*exp(-2*lam1-lam2), -exp(-2*lam1-lam2), 2*exp(-2*lam1-lam2)])
 end
+
+@testset "mcs5" begin
+    x = [ftevent(Symbol("x$i")) for i = 1:10]
+    expr = (x[9] | (x[2] & x[5] & x[6]) | (x[1] & x[10]) | (x[2] & x[6]))
+    result = ftmcs(expr)
+    println(result)
+    # @test isapprox(result, 0.1*0.5*0.8)
+end
+
+@testset "prob4" begin
+    x = ftevent(:x)
+    y = ftevent(:y)
+    z = ftevent(:z)
+    expr = ftkofn(2, x, y, z)
+    env = Dict([:x => 0.1, :y => 0.5, :z => 0.8])
+    result = fteval(expr, env)
+    println(result)
+    @test isapprox(result, 0.1*0.5*(1-0.8) + (1-0.1)*0.5*0.8 + 0.1*(1-0.5)*0.8 + 0.1*0.5*0.8)
+end

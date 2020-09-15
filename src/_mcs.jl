@@ -2,9 +2,18 @@
 MCS
 """
 
-export ftmcs!
-using DD: BDDForest, DDValue, DDVariable, defval!,defvar!, bddvars!, bddand!, bddor!, bddite!, bddnot!, domain
+export ftmcs, ftmcs!
+using DD
 
+function ftmcs(f::AbstractFaultTreeNode)
+    top, = bdd(f)
+    return ftmcs(top)
+end
+
+function ftmcs(f::AbstractDDNode{Tv,Ti}) where {Tv,Ti}
+    cache = Dict{AbstractDDNode{Tv,Ti},Vector{Vector{Symbol}}}()
+    return ftmcs!(f, cache)
+end
 
 function ftmcs!(f::DDVariable{Tv,Ti,2}, cache::Dict{AbstractDDNode{Tv,Ti},Vector{Vector{Symbol}}}) where {Tv,Ti}
     get(cache, f) do
