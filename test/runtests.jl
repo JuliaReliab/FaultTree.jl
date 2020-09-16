@@ -127,10 +127,11 @@ end
     expr = (x[9] | (x[2] & x[5] & x[6]) | (x[1] & x[10]) | (x[2] & x[6]))
     forest = BDDForest{Int,Int,Int}(FullyReduced())
     ft = bdd!(forest, expr)
+    # println(todot(forest, ft))
     cache = Dict{AbstractDDNode{Int,Int},Vector{Vector{Symbol}}}()
     result = ftmcs!(ft, cache)
     println(result)
-    @test result == [[:x1, :x10, :x6], [:x2, :x6], [:x9]]
+    @test result == [[:x1, :x10], [:x2, :x6], [:x9]]
 end
 
 @testset "probx" begin
@@ -244,7 +245,7 @@ end
     expr = (x[9] | (x[2] & x[5] & x[6]) | (x[1] & x[10]) | (x[2] & x[6]))
     result = ftmcs(expr)
     println(result)
-    @test result == [[:x1, :x10, :x6], [:x2, :x6], [:x9]]
+    @test result == [[:x1, :x10], [:x2, :x6], [:x9]]
 end
 
 @testset "prob4" begin
@@ -279,6 +280,35 @@ end
     # println(todot(forest, top))
     result = ftmcs(expr)
     println(result)
-    @test result == [[:x1, :x2, :y1, :y2, :y3], [:x1, :x3, :y1, :y2, :y3], [:x1, :y1, :y2, :z3], [:x1, :y1, :y3, :z2], [:x2, :x3, :y1, :y2, :y3], [:x2, :y1, :y2, :z3], [:x2, :y2, :y3, :z1], [:x3, :y1, :y3, :z2], [:x3, :y2, :y3, :z1], [:z1, :z2], [:z1, :z3], [:z2, :z3]]
+    @test result == [[:x1, :x2, :y1, :y2], [:x1, :x3, :y1, :y3], [:x1, :y1, :z2], [:x1, :y1, :z3], [:x2, :x3, :y2, :y3], [:x2, :y2, :z1], [:x2, :y2, :z3], [:x3, :y3, :z1], [:x3, :y3, :z2], [:z1, :z2], [:z1, :z3], [:z2, :z3]]
 end
 
+@testset "ftevent2" begin
+    x = [ftevent("x", i) for i = 1:3]
+    y = [ftevent("y", i) for i = 1:2]
+    z = ftevent("z")
+    s1 = x[1] + z
+    s2 = x[2] + z
+    s3 = x[3] + z
+    ft = ftkofn(2, s1, s2, s3) + y[1] * y[2]
+    top, forest = bdd(ft)
+    # println(todot(forest, top))
+    result = ftmcs(ft)
+    println(result)
+    @test result == [[:x1, :x2], [:x1, :x3], [:x2, :x3], [:y1, :y2], [:z]]
+end
+
+@testset "ftevent3" begin
+    x = [ftevent("motor failure ", i) for i = ["arm1", "arm2", "arm3"]] # 3 motors
+    y = [ftevent("sensor failure ", i) for i = ["left", "right"]] # 2 sensors
+    z = ftevent("battery failure") # battery failure
+    s1 = x[1] + z
+    s2 = x[2] + z
+    s3 = x[3] + z
+    ft = ftkofn(2, s1, s2, s3) + y[1] * y[2]
+    top, forest = bdd(ft)
+    # println(todot(forest, top))
+    result = ftmcs(ft)
+    println(result)
+    @test result == [[Symbol("battery failure")], [Symbol("motor failure arm1"), Symbol("motor failure arm2")], [Symbol("motor failure arm1"), Symbol("motor failure arm3")], [Symbol("motor failure arm2"), Symbol("motor failure arm3")], [Symbol("sensor failure left"), Symbol("sensor failure right")]]
+end

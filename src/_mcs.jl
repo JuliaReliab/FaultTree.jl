@@ -32,20 +32,20 @@ function _ftmcs!(f::DDValue{Tv,Ti}, cache::Dict{AbstractDDNode{Tv,Ti},Vector{Vec
     (f.val == Tv(1)) ? Vector{Symbol}[Symbol[]] : Vector{Symbol}[]
 end
 
-function _min(x, xs)
-    isempty(x) && return true
+function _remove!(x, xs)
     for y = xs
         isempty(setdiff(x, y)) && return false
     end
     return true
 end
 
-function _minimalset(xs)
+function _minimalset(args)
+    xs = sort(args, by=x->length(x), rev=true)
     result = Vector{Symbol}[]
-    for (i,x) = enumerate(xs)
-        if _min(x, xs[i+1:end])
-            push!(result, sort(x))
-        end
+    while !isempty(xs)
+        x = pop!(xs)
+        push!(result, sort(x))
+        xs = [y for y = xs if !issubset(x, y)]
     end
     sort(result)
 end
