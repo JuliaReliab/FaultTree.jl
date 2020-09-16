@@ -19,7 +19,8 @@ function todot(top::AbstractFaultTreeNode)
 end
 
 function _todot!(f::FaultTreeEvent, visited::Set{AbstractFaultTreeNode}, io::IO)
-    id = uuid1()
+#    id = uuid1()
+    id = "obj$(objectid(f))"
     println(io, "\"$(id)\" [shape = circle, label = \"$(f.var)\"];")
     id
 end
