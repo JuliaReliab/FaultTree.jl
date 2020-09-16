@@ -36,8 +36,8 @@ deriv1
 """
 
 function fteval(f::AbstractFaultTreeNode, env::Dict{Symbol,Tx}, denv::Dict{Symbol,Tx}) where Tx
-    bdd, = bdd(f)
-    return fteval(bdd, env, denv)
+    top, = bdd(f)
+    return fteval(top, env, denv)
 end
 
 function fteval(f::AbstractDDNode{Tv,Ti}, env::Dict{Symbol,Tx}, denv::Dict{Symbol,Tx}) where {Tv,Ti,Tx}
