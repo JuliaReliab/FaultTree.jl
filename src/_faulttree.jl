@@ -33,3 +33,8 @@ ftree
 function ftevent(var::Symbol)
     FaultTreeEvent(Set([var]), var)
 end
+
+function ftevent(var::Vararg)
+    s = Symbol(var...)
+    FaultTreeEvent(Set([s]), s)
+end

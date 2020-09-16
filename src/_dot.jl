@@ -25,10 +25,22 @@ function _todot!(f::FaultTreeEvent, visited::Set{AbstractFaultTreeNode}, io::IO)
 end
 
 function _todot!(f::AbstractFaultTreeOperation, visited::Set{AbstractFaultTreeNode}, io::IO)
-    (f in visited) && return nothing
-    push!(visited, f)
     id = "obj$(objectid(f))"
+    (f in visited) && return id
+    push!(visited, f)
     println(io, "\"$(id)\" [shape = square, label = \"$(f.op)\"];")
+    for x = f.args
+        dest = _todot!(x, visited, io)
+        println(io, "\"$(id)\" -> \"$(dest)\";")
+    end
+    id
+end
+
+function _todot!(f::FaultTreeKoutofN, visited::Set{AbstractFaultTreeNode}, io::IO)
+    id = "obj$(objectid(f))"
+    (f in visited) && return id
+    push!(visited, f)
+    println(io, "\"$(id)\" [shape = square, label = \"$(f.op) $(f.k)\"];")
     for x = f.args
         dest = _todot!(x, visited, io)
         println(io, "\"$(id)\" -> \"$(dest)\";")

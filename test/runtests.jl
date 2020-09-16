@@ -21,6 +21,7 @@ end
     y = ftevent(:y)
     z = ftevent(:z)
     expr = ~((x & y) | z | x)
+    expr = ftkofn(2, expr, expr, expr)
     println(todot(expr))
 end
 
@@ -92,6 +93,7 @@ end
     cache = Dict{AbstractDDNode{Int,Int},Vector{Vector{Symbol}}}()
     result = ftmcs!(ft, cache)
     println(result)
+    @test result == [[:x, :y, :z]]
 end
 
 @testset "mcs2" begin
@@ -104,7 +106,7 @@ end
     cache = Dict{AbstractDDNode{Int,Int},Vector{Vector{Symbol}}}()
     result = ftmcs!(ft, cache)
     println(result)
-    # @test isapprox(result, 0.1*0.5*0.8)
+    @test result == [[:x], [:y], [:z]]
 end
 
 @testset "mcs3" begin
@@ -117,7 +119,7 @@ end
     cache = Dict{AbstractDDNode{Int,Int},Vector{Vector{Symbol}}}()
     result = ftmcs!(ft, cache)
     println(result)
-    # @test isapprox(result, 0.1*0.5*0.8)
+    @test result == [[:x, :y], [:x, :z], [:y, :z]]
 end
 
 @testset "mcs4" begin
@@ -128,7 +130,7 @@ end
     cache = Dict{AbstractDDNode{Int,Int},Vector{Vector{Symbol}}}()
     result = ftmcs!(ft, cache)
     println(result)
-    # @test isapprox(result, 0.1*0.5*0.8)
+    @test result == [[:x1, :x10, :x6], [:x2, :x6], [:x9]]
 end
 
 @testset "probx" begin
@@ -189,8 +191,7 @@ end
     env = Dict(:x => exp(-lam1), :y => exp(-lam1), :z => exp(-lam2))
     cache = Dict{AbstractDDNode{Int,Int},Float64}()
     result = fteval!(ft, env, cache)
-    println(result)
-    # @test isapprox(result, 0.1*0.8)
+    @test isapprox(result, exp(-2*lam1-lam2))
 end
 
 @testset "fteval2b" begin
@@ -239,11 +240,11 @@ end
 end
 
 @testset "mcs5" begin
-    x = [ftevent(Symbol("x$i")) for i = 1:10]
+    x = [ftevent(Symbol("x", i)) for i = 1:10]
     expr = (x[9] | (x[2] & x[5] & x[6]) | (x[1] & x[10]) | (x[2] & x[6]))
     result = ftmcs(expr)
     println(result)
-    # @test isapprox(result, 0.1*0.5*0.8)
+    @test result == [[:x1, :x10, :x6], [:x2, :x6], [:x9]]
 end
 
 @testset "prob4" begin
@@ -256,3 +257,28 @@ end
     println(result)
     @test isapprox(result, 0.1*0.5*(1-0.8) + (1-0.1)*0.5*0.8 + 0.1*(1-0.5)*0.8 + 0.1*0.5*0.8)
 end
+
+@testset "mcs6" begin
+    x = ftevent(:x)
+    y = ftevent(:y)
+    z = ftevent(:z)
+    expr = x * y + z
+    expr = ftkofn(2, expr, expr, expr)
+    result = ftmcs(expr)
+    println(result)
+    @test result == [[:x, :y], [:z]]
+end
+
+@testset "ftevent1" begin
+    x = [ftevent("x", i) for i = 1:3]
+    y = [ftevent("y", i) for i = 1:3]
+    z = [ftevent("z", i) for i = 1:3]
+    ft = @. x * y + z
+    expr = ftkofn(2, ft[1], ft[2], ft[3])
+    top, forest = bdd(expr)
+    # println(todot(forest, top))
+    result = ftmcs(expr)
+    println(result)
+    @test result == [[:x1, :x2, :y1, :y2, :y3], [:x1, :x3, :y1, :y2, :y3], [:x1, :y1, :y2, :z3], [:x1, :y1, :y3, :z2], [:x2, :x3, :y1, :y2, :y3], [:x2, :y1, :y2, :z3], [:x2, :y2, :y3, :z1], [:x3, :y1, :y3, :z2], [:x3, :y2, :y3, :z1], [:z1, :z2], [:z1, :z3], [:z2, :z3]]
+end
+
