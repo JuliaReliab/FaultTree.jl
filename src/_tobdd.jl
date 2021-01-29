@@ -15,10 +15,16 @@ function bdd(top::AbstractFaultTreeNode)
 end
 
 function bdd!(forest::BDDForest{Tv,Ti,Tl}, top::AbstractFaultTreeNode) where {Tv,Ti,Tl}
-    defval!(forest, Tv(0))
-    defval!(forest, Tv(1))
+    if !haskey(forest.vals, Tv(0))
+        defval!(forest, Tv(0))
+    end
+    if !haskey(forest.vals, Tv(1))
+        defval!(forest, Tv(1))
+    end
     for (i,x) = enumerate(sort(collect(top.params)))
-        defvar!(forest, x, Tl(i), domain([Ti(0), Ti(1)]))
+        if !haskey(forest.vars, x)
+            defvar!(forest, x, Tl(i), domain([Ti(0), Ti(1)]))
+        end
     end
     nodes = Dict{AbstractFaultTreeNode,AbstractDDNode{Tv,Ti}}()
     _tobdd!(top, nodes, forest)
