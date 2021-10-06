@@ -6,9 +6,6 @@ Create dot file
 
 export todot
 
-import DD: todot
-using UUIDs: uuid1
-
 function todot(top::AbstractFaultTreeNode)
     io = IOBuffer()
     visited = Set{AbstractFaultTreeNode}()
@@ -19,7 +16,6 @@ function todot(top::AbstractFaultTreeNode)
 end
 
 function _todot!(f::FaultTreeEvent, visited::Set{AbstractFaultTreeNode}, io::IO)
-#    id = uuid1()
     id = "obj$(objectid(f))"
     println(io, "\"$(id)\" [shape = circle, label = \"$(f.var)\"];")
     id

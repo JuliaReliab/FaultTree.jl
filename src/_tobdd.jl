@@ -4,91 +4,60 @@ tobdd
 Create BDD
 """
 
-export bdd!, bdd
-
+export tobdd!, tobdd
 using DD
 
-function bdd(top::AbstractFaultTreeNode)
-    forest = BDDForest{Int,Int,Int}(FullyReduced())
-    node = bdd!(forest, top)
-    return node, forest
+function tobdd(top::AbstractFaultTreeNode)
+    b = BDD()
+    node = tobdd!(b, top)
+    return node, b
 end
 
-function bdd!(forest::BDDForest{Tv,Ti,Tl}, top::AbstractFaultTreeNode) where {Tv,Ti,Tl}
-    defval!(forest, Tv(0))
-    defval!(forest, Tv(1))
-    for (i,x) = enumerate(sort(collect(top.params)))
-        defvar!(forest, x, Tl(i), domain([Ti(0), Ti(1)]))
+function tobdd!(b::BDD{Ts}, top::AbstractFaultTreeNode) where Ts
+    nodes = Dict()
+    for x = sort(collect(top.params))
+        nodes[x] = var(b, x)
     end
-    nodes = Dict{AbstractFaultTreeNode,AbstractDDNode{Tv,Ti}}()
-    _tobdd!(top, nodes, forest)
+    _tobdd!(top, nodes, b)
 end
 
-function _tobdd!(f::FaultTreeEvent, nodes::Dict{AbstractFaultTreeNode,AbstractDDNode{Tv,Ti}},
-    forest::BDDForest{Tv,Ti,Tl})::AbstractDDNode{Tv,Ti} where {Tv,Ti,Tl}
-    get(nodes, f) do
-        v0 = ddval!(forest, Tv(0))
-        v1 = ddval!(forest, Tv(1))
-        nodes[f] = ddvar!(forest, f.var, v0, v1)
-    end
+function _tobdd!(f::FaultTreeEvent, nodes, b)
+    b.var(f.var)
 end
 
-function _tobdd!(f::AbstractFaultTreeOperation, nodes::Dict{AbstractFaultTreeNode,AbstractDDNode{Tv,Ti}},
-    forest::BDDForest{Tv,Ti,Tl})::AbstractDDNode{Tv,Ti} where {Tv,Ti,Tl}
-    get(nodes, f) do
-        _tobdd!(Val(f.op), f, nodes, forest)
-    end
+function _tobdd!(f::AbstractFaultTreeOperation, nodes, b)
+    _tobdd!(Val(f.op), f, nodes, b)
 end
 
-function _tobdd!(::Val{:NOT}, f::AbstractFaultTreeOperation, nodes::Dict{AbstractFaultTreeNode,AbstractDDNode{Tv,Ti}},
-    forest::BDDForest{Tv,Ti,Tl})::AbstractDDNode{Tv,Ti} where {Tv,Ti,Tl}
-    bargs = [_tobdd!(x, nodes, forest) for x = f.args]
+function _tobdd!(::Val{:NOT}, f::AbstractFaultTreeOperation, nodes::Dict{Symbol,Tuple{AbstractBDDNode{Ts},Bool}}, b::BDD{Ts})::Tuple{AbstractBDDNode{Ts},Bool} where Ts
+    bargs = [_tobdd!(x, nodes, b) for x = f.args]
     @assert length(bargs) == 1
-    bddnot!(forest, bargs[1])
+    bddnot(b, bargs[1])
 end
 
-function _tobdd!(::Val{:AND}, f::AbstractFaultTreeOperation, nodes::Dict{AbstractFaultTreeNode,AbstractDDNode{Tv,Ti}},
-    forest::BDDForest{Tv,Ti,Tl})::AbstractDDNode{Tv,Ti} where {Tv,Ti,Tl}
-    bargs = [_tobdd!(x, nodes, forest) for x = f.args]
-    _createAndGate(forest, bargs)
+function _tobdd!(::Val{:AND}, f::AbstractFaultTreeOperation, nodes::Dict{Symbol,Tuple{AbstractBDDNode{Ts},Bool}}, b::BDD{Ts})::Tuple{AbstractBDDNode{Ts},Bool} where Ts
+    bargs = [_tobdd!(x, nodes, b) for x = f.args]
+    bddand(b, bargs...)
 end
 
-function _tobdd!(::Val{:OR}, f::AbstractFaultTreeOperation, nodes::Dict{AbstractFaultTreeNode,AbstractDDNode{Tv,Ti}},
-    forest::BDDForest{Tv,Ti,Tl})::AbstractDDNode{Tv,Ti} where {Tv,Ti,Tl}
-    bargs = [_tobdd!(x, nodes, forest) for x = f.args]
-    _createOrGate(forest, bargs)
+function _tobdd!(::Val{:OR}, f::AbstractFaultTreeOperation, nodes::Dict{Symbol,Tuple{AbstractBDDNode{Ts},Bool}}, b::BDD{Ts})::Tuple{AbstractBDDNode{Ts},Bool} where Ts
+    bargs = [_tobdd!(x, nodes, b) for x = f.args]
+    bddor(b, bargs...)
 end
 
-function _tobdd!(::Val{:KofN}, f::AbstractFaultTreeOperation, nodes::Dict{AbstractFaultTreeNode,AbstractDDNode{Tv,Ti}},
-    forest::BDDForest{Tv,Ti,Tl})::AbstractDDNode{Tv,Ti} where {Tv,Ti,Tl}
-    bargs = [_tobdd!(x, nodes, forest) for x = f.args]
-    _createKofNGate(forest, f.k, bargs)
+function _tobdd!(::Val{:KofN}, f::AbstractFaultTreeOperation, nodes::Dict{Symbol,Tuple{AbstractBDDNode{Ts},Bool}}, b::BDD{Ts})::Tuple{AbstractBDDNode{Ts},Bool} where Ts
+    bargs = [_tobdd!(x, nodes, b) for x = f.args]
+    _createKofNGate(b, f.k, bargs)
 end
 
 """
 """
 
-function _createOrGate(forest::BDDForest{Tv,Ti,Tl}, args)::AbstractDDNode{Tv,Ti} where {Tv,Ti,Tl}
-    x = args[1]
-    for y = args[2:end]
-        x = bddor!(forest, x, y)
-    end
-    x
-end
-
-function _createAndGate(forest::BDDForest{Tv,Ti,Tl}, args)::AbstractDDNode{Tv,Ti} where {Tv,Ti,Tl}
-    x = args[1]
-    for y = args[2:end]
-        x = bddand!(forest, x, y)
-    end
-    x
-end
-
-function _createKofNGate(forest::BDDForest{Tv,Ti,Tl}, k, args)::AbstractDDNode{Tv,Ti} where {Tv,Ti,Tl}
+function _createKofNGate(b::BDD{Ts}, k, args) where Ts
     n = length(args)
-    (k == 1) && return _createOrGate(forest, args)
-    (k == n) && return _createAndGate(forest, args)
+    (k == 1) && return bddor(b, args...)
+    (k == n) && return bddand(b, args...)
     x = args[1]
     xs = args[2:end]
-    bddite!(forest, x, _createKofNGate(forest, k-1, xs), _createKofNGate(forest, k, xs))
+    bddite(b, x, _createKofNGate(b, k-1, xs), _createKofNGate(b, k, xs))
 end
