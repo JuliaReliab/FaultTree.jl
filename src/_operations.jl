@@ -1,53 +1,44 @@
-"""
-FaultTree
-"""
-
-export ftkofn, ftand, ftor, ftnot
-
 import Base
 
-function Base.:*(x::AbstractFaultTreeNode, y::AbstractFaultTreeNode)
-    ftand(x, y)
+function Base.:*(x::AbstractFTNode, y::AbstractFTNode)
+    and(x, y)
 end
 
-function Base.:&(x::AbstractFaultTreeNode, y::AbstractFaultTreeNode)
-    ftand(x, y)
+function Base.:&(x::AbstractFTNode, y::AbstractFTNode)
+    and(x, y)
 end
 
-function Base.:+(x::AbstractFaultTreeNode, y::AbstractFaultTreeNode)
-    ftor(x, y)
+function Base.:+(x::AbstractFTNode, y::AbstractFTNode)
+    or(x, y)
 end
 
-function Base.:|(x::AbstractFaultTreeNode, y::AbstractFaultTreeNode)
-    ftor(x, y)
+function Base.:|(x::AbstractFTNode, y::AbstractFTNode)
+    or(x, y)
 end
 
-function Base.:!(x::AbstractFaultTreeNode)
-    ftnot(x)
+function Base.:!(x::AbstractFTNode)
+    not(x)
 end
 
-function Base.:~(x::AbstractFaultTreeNode)
-    ftnot(x)
+function Base.:~(x::AbstractFTNode)
+    not(x)
 end
 
-function ftand(x::Vararg{AbstractFaultTreeNode})
-    s = union([y.params for y = x]...)
+function and(x::Vararg{AbstractFTNode})
     args = [y for y = x]
-    FaultTreeOperation(s, :AND, args)
+    FTOperation(:AND, args)
 end
 
-function ftor(x::Vararg{AbstractFaultTreeNode})
-    s = union([y.params for y = x]...)
+function or(x::Vararg{AbstractFTNode})
     args = [y for y = x]
-    FaultTreeOperation(s, :OR, args)
+    FTOperation(:OR, args)
 end
 
-function ftnot(x::AbstractFaultTreeNode)
-    FaultTreeOperation(x.params, :NOT, [x])
+function not(x::AbstractFTNode)
+    FTOperation(:NOT, [x])
 end
 
-function ftkofn(k::Int, x::Vararg{AbstractFaultTreeNode})
-    s = union([y.params for y = x]...)
+function kofn(k::Int, x::Vararg{AbstractFTNode})
     args = [y for y = x]
-    FaultTreeKoutofN(s, :KofN, k, args)
+    FTKoutofN(:KofN, k, args)
 end

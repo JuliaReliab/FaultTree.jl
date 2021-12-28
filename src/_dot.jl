@@ -4,28 +4,25 @@ todot
 Create dot file
 """
 
-export todot
+import DD.BDD: todot
 
-import DD: todot
-using UUIDs: uuid1
-
-function todot(top::AbstractFaultTreeNode)
+function todot(top::AbstractFTNode)
     io = IOBuffer()
-    visited = Set{AbstractFaultTreeNode}()
+    visited = Set{AbstractFTNode}()
     println(io, "digraph { layout=dot; overlap=false; splines=true; node [fontsize=10];")
     _todot!(top, visited, io)
     println(io, "}")
     return String(take!(io))
 end
 
-function _todot!(f::FaultTreeEvent, visited::Set{AbstractFaultTreeNode}, io::IO)
+function _todot!(f::FTEvent, visited::Set{AbstractFTNode}, io::IO)
 #    id = uuid1()
     id = "obj$(objectid(f))"
-    println(io, "\"$(id)\" [shape = circle, label = \"$(f.var)\"];")
+    println(io, "\"$(id)\" [shape = circle, label = \"$(f.label)\"];")
     id
 end
 
-function _todot!(f::AbstractFaultTreeOperation, visited::Set{AbstractFaultTreeNode}, io::IO)
+function _todot!(f::AbstractFTOperation, visited::Set{AbstractFTNode}, io::IO)
     id = "obj$(objectid(f))"
     (f in visited) && return id
     push!(visited, f)
@@ -37,7 +34,7 @@ function _todot!(f::AbstractFaultTreeOperation, visited::Set{AbstractFaultTreeNo
     id
 end
 
-function _todot!(f::FaultTreeKoutofN, visited::Set{AbstractFaultTreeNode}, io::IO)
+function _todot!(f::FTKoutofN, visited::Set{AbstractFTNode}, io::IO)
     id = "obj$(objectid(f))"
     (f in visited) && return id
     push!(visited, f)
