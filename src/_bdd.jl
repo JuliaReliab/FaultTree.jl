@@ -36,7 +36,7 @@ function _tobdd!(b::BDD.BDDForest{Symbol}, ::Val{:NOT}, f::FTOperation)
 end
 
 function _tobdd!(b::BDD.BDDForest{Symbol}, ::Val{:KofN}, f::FTKoutofN)
-    bargs = [_tobdd!(x, nodes, forest) for x = f.args]
+    bargs = [_tobdd!(b, x) for x = f.args]
     _createKofNGate(b, f.k, bargs)
 end
 
