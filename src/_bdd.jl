@@ -12,35 +12,40 @@
 #     _tobdd!(b, top)
 # end
 
-function _tobdd!(b::BDD.BDDForest{Symbol}, f::FTEvent)
-    BDD.var!(b, f.label)
+function _tobdd!(b::BDD.BDDForest{FTEvent}, f::FTEvent, env)
+    e = env[f.label]
+    if e[2] == :basic
+        BDD.var!(b, ftevent(f.label))
+    else
+        BDD.var!(b, f)
+    end
 end
 
-function _tobdd!(b::BDD.BDDForest{Symbol}, f)
-    _tobdd!(b, Val(f.op), f)
+function _tobdd!(b::BDD.BDDForest{FTEvent}, f, env)
+    _tobdd!(b, Val(f.op), f, env)
 end
 
-function _tobdd!(b::BDD.BDDForest{Symbol}, ::Val{:AND}, f::FTOperation)
-    bargs = [_tobdd!(b, x) for x = f.args]
+function _tobdd!(b::BDD.BDDForest{FTEvent}, ::Val{:AND}, f::FTOperation, env)
+    bargs = [_tobdd!(b, x, env) for x = f.args]
     BDD.and(b, bargs...)
 end
 
-function _tobdd!(b::BDD.BDDForest{Symbol}, ::Val{:OR}, f::FTOperation)
-    bargs = [_tobdd!(b, x) for x = f.args]
+function _tobdd!(b::BDD.BDDForest{FTEvent}, ::Val{:OR}, f::FTOperation, env)
+    bargs = [_tobdd!(b, x, env) for x = f.args]
     BDD.or(b, bargs...)
 end
 
-function _tobdd!(b::BDD.BDDForest{Symbol}, ::Val{:NOT}, f::FTOperation)
+function _tobdd!(b::BDD.BDDForest{FTEvent}, ::Val{:NOT}, f::FTOperation, env)
     @assert length(f.args) == 1
-    BDD.not(b, _tobdd!(b, f.args[1]))
+    BDD.not(b, _tobdd!(b, f.args[1], env))
 end
 
-function _tobdd!(b::BDD.BDDForest{Symbol}, ::Val{:KofN}, f::FTKoutofN)
-    bargs = [_tobdd!(b, x) for x = f.args]
+function _tobdd!(b::BDD.BDDForest{FTEvent}, ::Val{:KofN}, f::FTKoutofN, env)
+    bargs = [_tobdd!(b, x, env) for x = f.args]
     _createKofNGate(b, f.k, bargs)
 end
 
-function _createKofNGate(b::BDD.BDDForest{Symbol}, k, args)
+function _createKofNGate(b::BDD.BDDForest{FTEvent}, k, args)
     n = length(args)
     (k == 1) && return BDD.or(b, args...)
     (k == n) && return BDD.and(b, args...)
