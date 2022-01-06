@@ -15,7 +15,7 @@ function todot(top::AbstractFTNode)
     return String(take!(io))
 end
 
-function _todot!(f::FTEvent, visited::Set{AbstractFTNode}, io::IO)
+function _todot!(f::AbstractFTEvent, visited::Set{AbstractFTNode}, io::IO)
 #    id = uuid1()
     id = "obj$(objectid(f))"
     println(io, "\"$(id)\" [shape = circle, label = \"$(f.label)\"];")

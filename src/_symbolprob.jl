@@ -6,8 +6,8 @@ struct SymbolicFTProbExpression{Tv} <: SymbolicDiff.AbstractSymbolic{Tv}
     params::Set{Symbol}
     op::Symbol
     events::Dict{Symbol,<:SymbolicDiff.AbstractSymbolic{Tv}}
-    top::BDD.AbstractNode{FTEvent}
-    bdd::BDD.BDDForest{FTEvent}
+    top::BDD.AbstractNode{AbstractFTEvent}
+    bdd::BDD.BDDForest{AbstractFTEvent}
 end
 
 function Base.show(io::IO, x::SymbolicFTProbExpression{Tv}) where Tv
@@ -49,7 +49,7 @@ function SymbolicDiff._eval(::Val{:cprobG}, ft::SymbolicFTProbExpression{Tv}, en
     _fteval(Val(:CCDF), Val(:G), ft, env, cache, ft.top, bddcache)
 end
 
-function _fteval(op1, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{FTEvent}, bddcache)::Tv where Tv
+function _fteval(op1, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, f.id) do
         v = f.header.label.label
         
@@ -63,7 +63,7 @@ function _fteval(op1, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::Symbo
     end
 end
 
-function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{FTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, f.id) do
         v = f.header.label.label
         
@@ -77,19 +77,19 @@ function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, env::
     end
 end
 
-function _fteval(::Val{:CDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     (f == ft.bdd.zero) ? Tv(0) : Tv(1)
 end
 
-function _fteval(::Val{:CDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     (f == ft.bdd.zero) ? Tv(1) : Tv(0)
 end
 
-function _fteval(::Val{:CCDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CCDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     (f == ft.bdd.zero) ? Tv(1) : Tv(0)
 end
 
-function _fteval(::Val{:CCDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CCDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     (f == ft.bdd.zero) ? Tv(0) : Tv(1)
 end
 
@@ -118,7 +118,7 @@ function SymbolicDiff._eval(::Val{:cprobG}, f::SymbolicFTProbExpression{Tv}, dva
     _fteval(Val(:CCDF), Val(:G), f, dvar, env, cache, f.top, bddcache)
 end
 
-function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{FTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, (f.id,dvar)) do
         v = f.header.label.label
 
@@ -137,7 +137,7 @@ function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar:
     end
 end
 
-function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{FTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, (f.id,dvar)) do
         v = f.header.label.label
 
@@ -156,19 +156,19 @@ function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar:
     end
 end
 
-function _fteval(::Val{:CDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     Tv(0)
 end
 
-function _fteval(::Val{:CDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     Tv(0)
 end
 
-function _fteval(::Val{:CCDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CCDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     Tv(0)
 end
 
-function _fteval(::Val{:CCDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CCDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     Tv(0)
 end
 
@@ -197,7 +197,7 @@ function SymbolicDiff._eval(::Val{:cprobG}, f::SymbolicFTProbExpression{Tv}, dva
     _fteval(Val(:CCDF), Val(:G), f, dvar, env, cache, f.top, bddcache)
 end
 
-function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{FTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, (f.id,dvar)) do
         v = f.header.label.label
 
@@ -225,7 +225,7 @@ function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar:
     end
 end
 
-function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{FTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, (f.id,dvar)) do
         v = f.header.label.label
 
@@ -253,18 +253,18 @@ function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar:
     end
 end
 
-function _fteval(::Val{:CDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     Tv(0)
 end
 
-function _fteval(::Val{:CDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     Tv(0)
 end
 
-function _fteval(::Val{:CCDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CCDF}, ::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     Tv(0)
 end
 
-function _fteval(::Val{:CCDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv
+function _fteval(::Val{:CCDF}, ::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv
     Tv(0)
 end

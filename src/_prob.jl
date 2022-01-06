@@ -11,7 +11,7 @@ function cprob(ft::FTree{Tv}; type = :F, bddcache = Dict())::Tv where Tv <: Numb
     _prob(Val(:CCDF), Val(type), ft, ft.top, bddcache)
 end
 
-function _prob(op1::Tc, op2::Val{:F}, ft::FTree{Tv}, f::BDD.AbstractNode{FTEvent}, bddcache)::Tv where {Tc, Tv <: Number}
+function _prob(op1::Tc, op2::Val{:F}, ft::FTree{Tv}, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where {Tc, Tv <: Number}
     get(bddcache, f.id) do
         v = f.header.label.label
         
@@ -25,17 +25,17 @@ function _prob(op1::Tc, op2::Val{:F}, ft::FTree{Tv}, f::BDD.AbstractNode{FTEvent
     end
 end
 
-function _prob(::Val{:CDF}, ::Val{:F}, ft::FTree{Tv}, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv <: Number
+function _prob(::Val{:CDF}, ::Val{:F}, ft::FTree{Tv}, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv <: Number
     (f == ft.bdd.zero) ? Tv(0) : Tv(1)
 end
 
-function _prob(::Val{:CCDF}, ::Val{:F}, ft::FTree{Tv}, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv <: Number
+function _prob(::Val{:CCDF}, ::Val{:F}, ft::FTree{Tv}, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv <: Number
     (f == ft.bdd.zero) ? Tv(1) : Tv(0)
 end
 
 ## TODO: check the computation for G
 
-function _prob(op1::Tc, op2::Val{:G}, ft::FTree{Tv}, f::BDD.AbstractNode{FTEvent}, bddcache)::Tv where {Tc, Tv <: Number}
+function _prob(op1::Tc, op2::Val{:G}, ft::FTree{Tv}, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where {Tc, Tv <: Number}
     get(bddcache, f.id) do
         v = f.header.label.label
         
@@ -49,11 +49,11 @@ function _prob(op1::Tc, op2::Val{:G}, ft::FTree{Tv}, f::BDD.AbstractNode{FTEvent
     end
 end
 
-function _prob(::Val{:CDF}, ::Val{:G}, ft::FTree{Tv}, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv <: Number
+function _prob(::Val{:CDF}, ::Val{:G}, ft::FTree{Tv}, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv <: Number
     (f == ft.bdd.zero) ? Tv(1) : Tv(0)
 end
 
-function _prob(::Val{:CCDF}, ::Val{:G}, ft::FTree{Tv}, f::BDD.Terminal{FTEvent}, bddcache)::Tv where Tv <: Number
+function _prob(::Val{:CCDF}, ::Val{:G}, ft::FTree{Tv}, f::BDD.Terminal{AbstractFTEvent}, bddcache)::Tv where Tv <: Number
     (f == ft.bdd.zero) ? Tv(0) : Tv(1)
 end
 

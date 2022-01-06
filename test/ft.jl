@@ -1,35 +1,35 @@
 @testset "FaultTree1" begin
     x = 0.9
-    top = ftevent(:x) & ftevent(:x)
+    top = ftbasic(:x) & ftbasic(:x)
     println(todot(top))
-    f = ftree(top, Dict(:x=>(x,:basic)))
+    f = ftree(top, Dict(:x=>x))
     println(BDD.todot(f.bdd, f.top))
     println(prob(f))
 end
 
 @testset "FaultTree2" begin
     x = 0.9
-    top = ftevent(:x) & ftevent(:x)
+    top = ftbasic(:x) & ftbasic(:x)
     println(todot(top))
-    f = ftree(top, Dict(:x=>(x,:basic)))
+    f = ftree(top, Dict(:x=>x))
     println(BDD.todot(f.bdd, f.top))
     println(cprob(f))
 end
 
 @testset "FaultTree3" begin
     x = 0.9
-    top = ftevent(:x) & ftevent(:x)
+    top = ftbasic(:x) & ftbasic(:x)
     println(todot(top))
-    f = ftree(top, Dict(:x=>(x,:basic)))
+    f = ftree(top, Dict(:x=>x))
     println(BDD.todot(f.bdd, f.top))
     println(prob(f, type=:G))
 end
 
 @testset "FaultTree4" begin
     x = 0.9
-    top = ftevent(:x) & ftevent(:x)
+    top = ftbasic(:x) & ftbasic(:x)
     println(todot(top))
-    f = ftree(top, Dict(:x=>(x,:basic)))
+    f = ftree(top, Dict(:x=>x))
     println(BDD.todot(f.bdd, f.top))
     println(cprob(f, type=:G))
 end
@@ -96,4 +96,16 @@ end
     println(BDD.todot(f.bdd, f.top))
     println(typeof(f))
     println(prob(f))
+end
+
+@testset "FaultTreeMacro6" begin
+    @ftree test(_x) begin
+        @basic begin
+            x = _x
+        end
+        x & x
+    end
+    f = test(:x)
+    println(BDD.todot(f.bdd, f.top))
+    println(typeof(f))
 end

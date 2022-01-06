@@ -4,7 +4,7 @@ import Base
 import SymbolicDiff
 import DD.BDD
 
-export ftevent, and, or, not, kofn, todot
+export ftbasic, ftrepeat, and, or, not, kofn, todot
 export ftree, prob, cprob, @basic, @repeat, @ftree
 
 include("_faulttree.jl")
