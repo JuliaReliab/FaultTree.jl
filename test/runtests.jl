@@ -5,3 +5,4 @@ using Test
 
 include("ft.jl")
 include("symbol.jl")
+include("sample.jl")

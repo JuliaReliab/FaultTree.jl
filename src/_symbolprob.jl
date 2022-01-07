@@ -49,10 +49,9 @@ function SymbolicDiff._eval(::Val{:cprobG}, ft::SymbolicFTProbExpression{Tv}, en
     _fteval(Val(:CCDF), Val(:G), ft, env, cache, ft.top, bddcache)
 end
 
-function _fteval(op1, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Union{Val{:CDF},Val{:CCDF}}, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, f.id) do
         v = f.header.label.label
-        
         p = SymbolicDiff.seval(ft.events[v], env, cache)
         barp = 1 - p
 
@@ -63,7 +62,7 @@ function _fteval(op1, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, env::Symbo
     end
 end
 
-function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Union{Val{:CDF},Val{:CCDF}}, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, f.id) do
         v = f.header.label.label
         
@@ -118,7 +117,7 @@ function SymbolicDiff._eval(::Val{:cprobG}, f::SymbolicFTProbExpression{Tv}, dva
     _fteval(Val(:CCDF), Val(:G), f, dvar, env, cache, f.top, bddcache)
 end
 
-function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Union{Val{:CDF},Val{:CCDF}}, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, (f.id,dvar)) do
         v = f.header.label.label
 
@@ -137,7 +136,7 @@ function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar:
     end
 end
 
-function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Union{Val{:CDF},Val{:CCDF}}, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Symbol, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, (f.id,dvar)) do
         v = f.header.label.label
 
@@ -197,7 +196,7 @@ function SymbolicDiff._eval(::Val{:cprobG}, f::SymbolicFTProbExpression{Tv}, dva
     _fteval(Val(:CCDF), Val(:G), f, dvar, env, cache, f.top, bddcache)
 end
 
-function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Union{Val{:CDF},Val{:CCDF}}, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, (f.id,dvar)) do
         v = f.header.label.label
 
@@ -225,7 +224,7 @@ function _fteval(op1::Any, op2::Val{:F}, ft::SymbolicFTProbExpression{Tv}, dvar:
     end
 end
 
-function _fteval(op1::Any, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
+function _fteval(op1::Union{Val{:CDF},Val{:CCDF}}, op2::Val{:G}, ft::SymbolicFTProbExpression{Tv}, dvar::Tuple{Symbol,Symbol}, env::SymbolicDiff.SymbolicEnv, cache::SymbolicDiff.SymbolicCache, f::BDD.AbstractNode{AbstractFTEvent}, bddcache)::Tv where Tv
     get(bddcache, (f.id,dvar)) do
         v = f.header.label.label
 
