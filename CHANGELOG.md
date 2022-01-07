@@ -1,3 +1,7 @@
+# 0.5.1
+
+- add test for hybrid model
+
 # 0.5.0
 
 - change @bind
