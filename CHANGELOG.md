@@ -1,3 +1,7 @@
+# 0.5.2
+
+- change to mutable objects
+
 # 0.5.1
 
 - add test for hybrid model

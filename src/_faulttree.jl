@@ -2,12 +2,12 @@
 abstract type AbstractFTNode end
 abstract type AbstractFTOperation <: AbstractFTNode end
 
-struct FTOperation <: AbstractFTOperation
+mutable struct FTOperation <: AbstractFTOperation
     op::Symbol
     args::Vector{<:AbstractFTNode}
 end
 
-struct FTKoutofN <: AbstractFTOperation
+mutable struct FTKoutofN <: AbstractFTOperation
     op::Symbol
     k::Int
     args::Vector{<:AbstractFTNode}
@@ -15,7 +15,7 @@ end
 
 abstract type AbstractFTEvent <: AbstractFTNode end
 
-struct FTRepeatEvent <: AbstractFTEvent
+mutable struct FTRepeatEvent <: AbstractFTEvent
     label::Symbol
 end
 
@@ -37,7 +37,7 @@ end
 
 ###
 
-struct FTree{Tv}
+mutable struct FTree{Tv}
     top::BDD.AbstractNode{AbstractFTEvent}
     bdd::BDD.BDDForest{AbstractFTEvent}
     events::Dict{Symbol,Tv}
