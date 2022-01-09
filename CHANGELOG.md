@@ -1,3 +1,7 @@
+# 0.5.3
+
+- add mcs (minimal cut set)
+
 # 0.5.2
 
 - change to mutable objects
