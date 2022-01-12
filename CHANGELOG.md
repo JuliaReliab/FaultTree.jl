@@ -1,3 +1,7 @@
+# 0.5.4
+
+- fix the dependency (use SymbolicDiff 0.9.3)
+
 # 0.5.3
 
 - add mcs (minimal cut set)

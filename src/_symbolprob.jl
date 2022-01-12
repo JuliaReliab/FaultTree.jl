@@ -2,7 +2,7 @@
 FTProb
 """
 
-mutable struct SymbolicFTProbExpression{Tv} <: SymbolicDiff.AbstractSymbolic{Tv}
+mutable struct SymbolicFTProbExpression{Tv} <: SymbolicDiff.AbstractNumberSymbolic{Tv}
     params::Set{Symbol}
     op::Symbol
     events::Dict{Symbol,<:SymbolicDiff.AbstractSymbolic{Tv}}
