@@ -53,6 +53,11 @@ function ftree(top::AbstractFTNode, events)
     FTree(bddtop, b, Dict(k=>v for (k,v) = events))
 end
 
+function ftree(b, top::AbstractFTNode, events)
+    bddtop = _tobdd!(b, top)
+    FTree(bddtop, b, Dict(k=>v for (k,v) = events))
+end
+
 """
 macro
 """
