@@ -12,7 +12,7 @@ export symbol
 export ftree
 export ftbasic
 export ftintermediate
-export ftrepeat
+export ftrepeated
 export ftand
 export ftor
 export ftkofn
@@ -165,11 +165,11 @@ function ftbasic(x::Symbol)
 end
 
 """
-    ftrepeat(x)
+    ftrepeated(x)
 
 Create an FTRpeatEvent.
 """
-function ftrepeat(x::Symbol)
+function ftrepeated(x::Symbol)
     FTRepeatEvent(x)
 end
 

@@ -20,7 +20,7 @@ end
 end
 
 @testset "FaultTreeBDD_prob3" begin
-    x = ftrepeat(:x)
+    x = ftrepeated(:x)
     top = ftkofn(2, x, x, x)
     f = ftree(top)
     env = Dict(

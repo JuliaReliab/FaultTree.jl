@@ -4,7 +4,7 @@
 end
 
 @testset "FaultTree1" begin
-    top = ftbasic(:x) & ftrepeat(:u) | ftbasic(:x)
+    top = ftbasic(:x) & ftrepeated(:u) | ftbasic(:x)
     println(top)
 end
 

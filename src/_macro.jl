@@ -1,5 +1,5 @@
 export @basic
-export @repeat
+export @repeated
 export @parameters
 
 """
@@ -64,34 +64,34 @@ function _genbasic(x::Symbol)
 end
 
 """
-    @repeat block
+    @repeated block
 
-A macro to define a repeat event
+A macro to define a repeated event
 
 ### Example
 ```julia
-@repeat x
+@repeated x
 ```
 =>
 ```julia
 begin
-    x = ftrepeat(:x)
+    x = ftrepeated(:x)
 end
 ````
 
 ```julia
-@repeat x, y
+@repeated x, y
 ```
 =>
 ```julia
 begin
-    x = ftrepeat(:x)
-    y = ftrepeat(:y)
+    x = ftrepeated(:x)
+    y = ftrepeated(:y)
 end
 ````
 
 ```julia
-@repeat begin
+@repeated begin
     x
     y
 end
@@ -99,12 +99,12 @@ end
 =>
 ```julia
 begin
-    x = ftrepeat(:x)
-    y = ftrepeat(:y)
+    x = ftrepeated(:x)
+    y = ftrepeated(:y)
 end
 ````
 """
-macro repeat(x)
+macro repeated(x)
     if Meta.isexpr(x, :tuple)
         body = [_genrepeat(x) for x = x.args]
         esc(Expr(:block, body...))
@@ -121,7 +121,7 @@ function _genrepeat(x::Any)
 end
 
 function _genrepeat(x::Symbol)
-    Expr(:(=), x, Expr(:call, :ftrepeat, Expr(:quote, x)))
+    Expr(:(=), x, Expr(:call, :ftrepeated, Expr(:quote, x)))
 end
 
 """

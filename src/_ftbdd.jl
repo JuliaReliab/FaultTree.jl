@@ -15,7 +15,7 @@ A type for fault tree context.
 - `bdd`: An instance of BDD context
 - `nvars`: The number of BDD variables
 - `basic`: The dictionary of basic event. The value is the next index of basic event variable.
-- `repeat`: The dictionary of repeat event.
+- `repeated`: The dictionary of repeated event.
 - `desc`: A dictionary of descriptions
 """
 mutable struct FTree
@@ -23,7 +23,7 @@ mutable struct FTree
     nvars::Int
     basic::Dict{Symbol,Int}
     basicinv::Dict{Symbol,Symbol}
-    repeat::Dict{Symbol,BDD.AbstractNode}
+    repeated::Dict{Symbol,BDD.AbstractNode}
     desc::Dict{AbstractFTEvent,String}
     top::BDD.AbstractNode
 
@@ -33,7 +33,7 @@ mutable struct FTree
         f.nvars = 0
         f.basic = Dict{Symbol,Int}()
         f.basicinv = Dict{Symbol,Symbol}()
-        f.repeat = Dict{Symbol,BDD.AbstractNode}()
+        f.repeated = Dict{Symbol,BDD.AbstractNode}()
         f.desc = Dict{AbstractFTEvent,String}()
         f
     end
@@ -137,7 +137,7 @@ function _tobdd!(ft::FTree, x::FTBasicEvent)
 end
 
 function _tobdd!(ft::FTree, x::FTRepeatEvent)
-    get!(ft.repeat, symbol(x)) do
+    get!(ft.repeated, symbol(x)) do
         ft.basicinv[symbol(x)] = symbol(x)
         _nextvar!(ft, symbol(x))
     end
