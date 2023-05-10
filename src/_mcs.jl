@@ -7,8 +7,8 @@ export mcs
 
 Get MCS (minimal cut set) of FaultTree. The result is a set of vectors of event symbols.
 """
-function mcs(ft::FTree)
-    _mcs(getbdd(ft), gettop(ft))
+function mcs(f::BDD.AbstractNode)
+    _mcs(BDD.forest(f), f)
 end
 
 function _mcs(b::BDD.Forest, f::BDD.AbstractNode)

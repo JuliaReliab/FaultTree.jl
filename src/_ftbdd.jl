@@ -25,11 +25,10 @@ mutable struct FTree
     basicinv::Dict{Symbol,Symbol}
     repeated::Dict{Symbol,BDD.AbstractNode}
     desc::Dict{AbstractFTEvent,String}
-    top::BDD.AbstractNode
 
-    function FTree(bdd::BDD.Forest)
+    function FTree()
         f = new()
-        f.bdd = bdd
+        f.bdd = BDD.bdd()
         f.nvars = 0
         f.basic = Dict{Symbol,Int}()
         f.basicinv = Dict{Symbol,Symbol}()
@@ -88,20 +87,12 @@ function _nextvar!(ft::FTree, x::Symbol)
 end
 
 """
-    ftree(top::AbstractFTObject)
-    ftree(b::BDD.Forest, top::AbstractFTObject)
+    ftree(ft::FTree, top::AbstractFTObject)
 
 Create FTree.
 """
-function ftree(bdd::BDD.Forest, top::AbstractFTObject)
-    ft = FTree(bdd)
-    ft.top = _tobdd!(ft, top)
-    ft
-end
-
-function ftree(top::AbstractFTObject)
-    b = BDD.bdd()
-    ftree(b, top)
+function ftree(ft::FTree, top::AbstractFTObject)
+    _tobdd!(ft, top)
 end
 
 function _tobdd!(ft::FTree, x::FTAndGate)

@@ -3,12 +3,12 @@ import DD.BDD
 export prob
 export cprob
 
-function prob(ft::FTree, env::Dict{Symbol,Tv}; type = :F, bddcache = Dict())::Tv where Tv <: Number
-    _prob(Val(:CDF), Val(type), ft, gettop(ft), env, bddcache)
+function prob(ft::FTree, f::BDD.AbstractNode, env::Dict{Symbol,Tv}; type = :F, bddcache = Dict())::Tv where Tv <: Number
+    _prob(Val(:CDF), Val(type), ft, f, env, bddcache)
 end
 
-function cprob(ft::FTree, env::Dict{Symbol,Tv}; type = :F, bddcache = Dict())::Tv where Tv <: Number
-    _prob(Val(:CCDF), Val(type), ft, gettop(ft), env, bddcache)
+function cprob(ft::FTree, f::BDD.AbstractNode, env::Dict{Symbol,Tv}; type = :F, bddcache = Dict())::Tv where Tv <: Number
+    _prob(Val(:CCDF), Val(type), ft, f, env, bddcache)
 end
 
 function _prob(op1::Tc, op2::Val{:F}, ft::FTree, f::BDD.AbstractNonTerminalNode, env::Dict{Symbol,Tv}, bddcache)::Tv where {Tc, Tv <: Number}

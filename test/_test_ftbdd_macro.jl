@@ -25,16 +25,18 @@ end
     env = Dict{Symbol,Float64}()
     @basic x, y
     top = x & x & y
-    f = ftree(top)
-    println(todot(f.top))
+    ft = FTree()
+    f = ftree(ft, top)
+    println(todot(f))
 end
 
 @testset "FaultTreeBDD_macro2" begin
     env = Dict{Symbol,Float64}()
     @repeated x, y
     top = x & x & y
-    f = ftree(top)
-    println(todot(f.top))
+    ft = FTree()
+    f = ftree(ft, top)
+    println(todot(f))
 end
 
 @testset "FaultTreeBDD_macro2" begin
@@ -44,8 +46,9 @@ end
         y
     end
     top = x & x & y
-    f = ftree(top)
-    println(todot(f.top))
+    ft = FTree()
+    f = ftree(ft, top)
+    println(todot(f))
 end
 
 @testset "FaultTreeBDD_macro3" begin
@@ -55,8 +58,9 @@ end
     end
     @basic x, y
     top = x & x & y
-    f = ftree(top)
-    println(prob(f, env, type=:G))
+    ft = FTree()
+    f = ftree(ft, top)
+    println(prob(ft, f, env, type=:G))
 end
 
 @testset "FaultTreeBDD_macro3" begin
@@ -66,15 +70,17 @@ end
     end
     @repeated x, y
     top = x & x & y
-    f = ftree(top)
-    println(prob(f, env, type=:G))
+    ft = FTree()
+    f = ftree(ft, top)
+    println(prob(ft, f, env, type=:G))
 end
 
 @testset "FaultTreeBDD_macro3" begin
     @repeated x, y
     top = x & x & y
-    f = ftree(top)
-    p = prob(f, type=:G,
+    ft = FTree()
+    f = ftree(ft, top)
+    p = prob(ft, f, type=:G,
         @parameters begin
             x = 0.9
             y = 0.8
@@ -83,11 +89,13 @@ end
 end
 
 @testset "FaultTreeBDD_macro3" begin
+    ft = FTree()
     p = prob(type=:G,
+        ft,
         let
             @repeated x, y
             top = x & x & y
-            ftree(top)
+            ftree(ft, top)
         end,
         @parameters begin
             x = 0.9

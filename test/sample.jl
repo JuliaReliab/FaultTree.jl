@@ -1,8 +1,9 @@
 using DD.BDD
 
 @testset "Sample0" begin
+    ft = FTree()
     @repeated midplane, cooling, power
-    cm = ftree(midplane | cooling | power)
+    cm = ftree(ft, midplane | cooling | power)
 
     env = @parameters begin
         midplane = 0.8
@@ -10,11 +11,12 @@ using DD.BDD
         power = 0.3
     end
 
-    @time println(prob(cm, env))
-    @time println(prob(cm, env))
+    @time println(prob(ft, cm, env))
+    @time println(prob(ft, cm, env))
 end
 
 @testset "Sample1" begin
+    ft = FTree()
 
     Node = [ftrepeated(Symbol("Node_", x)) for x = 1:8]
     nic1 = [ftrepeated(Symbol("nic1_", x)) for x = 1:8]
@@ -58,7 +60,7 @@ end
     apps = ftkofn(6, [AS[i] for i = 1:12]...)
     top = apps | pxys
 
-    f = ftree(top)
+    f = ftree(ft, top)
     # open("result.txt", "w") do iow
     #     write(iow, todot(gettop(f)))
     # end
@@ -73,8 +75,8 @@ end
         :SWP => 0.1
     )
 
-    @time println(prob(f, env))
-    @time println(prob(f, env))
+    @time println(prob(ft, f, env))
+    @time println(prob(ft, f, env))
 end
 
 # @testset "Sample2" begin
