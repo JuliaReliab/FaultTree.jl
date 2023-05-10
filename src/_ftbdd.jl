@@ -2,6 +2,7 @@ import DD.BDD
 
 export FTree
 export getbdd
+export gettop
 export nvars
 export ftree
 

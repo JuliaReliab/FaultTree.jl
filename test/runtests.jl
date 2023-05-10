@@ -6,9 +6,10 @@ include("_test_ftbdd.jl")
 include("_test_ftbdd_mcs.jl")
 include("_test_ftbdd_prob.jl")
 
+include("_test_ftbdd_macro.jl")
+
 # include("symbol.jl")
-# include("sample.jl")
+
+include("sample.jl")
 
 # include("hybrid.jl")
-
-# include("mcs.jl")

@@ -15,5 +15,6 @@ include("_prob.jl")
 # include("_symbolprob.jl")
 
 include("_mcs.jl")
+include("_macro.jl")
 
 end

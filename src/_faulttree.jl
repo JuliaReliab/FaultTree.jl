@@ -8,6 +8,7 @@ export FTKofNGate
 export FTBasicEvent
 export FTIntermediateEvent
 export FTRepeatEvent
+export symbol
 export ftree
 export ftbasic
 export ftintermediate
@@ -236,92 +237,3 @@ end
 function Base.:|(x::AbstractFTObject, y::AbstractFTObject)
     ftor(x, y)
 end
-
-# """
-# macro
-# """
-
-# macro basic(m, block)
-#     if Meta.isexpr(block, :block)
-#         body = [_genbasic(x, m) for x = block.args]
-#         esc(Expr(:block, body...))
-#     else
-#         esc(_genbasic(block, m))
-#     end
-# end
-
-# function _genbasic(x::Any, m)
-#     x
-# end
-
-# function _genbasic(x::Expr, m)
-#     if Meta.isexpr(x, :(=))
-#         label = x.args[1]
-#         p = x.args[2]
-#         Expr(:block,
-#             Expr(:(=), Expr(:ref, m, Expr(:quote, label)), p),
-#             Expr(:(=), label, Expr(:call, :ftbasic, Expr(:quote, label)))
-#         )
-#     else
-#         throw(TypeError(x, "Invalid format for basic event"))
-#     end
-# end
-
-# macro repeat(m, block)
-#     if Meta.isexpr(block, :block)
-#         body = [_genrepeat(x, m) for x = block.args]
-#         esc(Expr(:block, body...))
-#     else
-#         esc(_genrepeat(block, m))
-#     end
-# end
-
-# function _genrepeat(x::Any, m)
-#     x
-# end
-
-# function _genrepeat(x::Expr, m)
-#     if Meta.isexpr(x, :(=))
-#         label = x.args[1]
-#         p = x.args[2]
-#         Expr(:block,
-#             Expr(:(=), Expr(:ref, m, Expr(:quote, label)), p),
-#             Expr(:(=), label, Expr(:call, :ftrepeat, Expr(:quote, label)))
-#         )
-#     else
-#         throw(TypeError(x, "Invalid format for repeated event"))
-#     end
-# end
-
-# macro ftree(f, block)
-#     body = []
-#     env = gensym()
-#     top = gensym()
-#     if Meta.isexpr(block, :block)
-#         for x = block.args
-#             push!(body, _replace_macro(x, env))
-#         end
-#     end
-#     expr = Expr(:block,
-#         Expr(:(=), env, Expr(:call, :Dict)),
-#         Expr(:(=), top, Expr(:let, Expr(:block), Expr(:block, body...)))
-#     )
-#     esc(Expr(:function, f,
-#         Expr(:block,
-#             expr,
-#             Expr(:call, :ftree, top, env)
-#         )
-#     ))
-# end
-
-# function _replace_macro(x::Any, env)
-#     x
-# end
-
-# function _replace_macro(x::Expr, env)
-#     if Meta.isexpr(x, :macrocall) && (x.args[1] == Symbol("@basic") || x.args[1] == Symbol("@repeat"))
-#         Expr(:macrocall, x.args[1], x.args[2], env, [_replace_macro(u, env) for u = x.args[3:end]]...)
-#     else
-#         Expr(x.head, [_replace_macro(u, env) for u = x.args]...)
-#     end
-# end
