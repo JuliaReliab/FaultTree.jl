@@ -1,12 +1,14 @@
 using FaultTree
-using DD.BDD
-using SymbolicDiff
 using Test
 
-include("ft.jl")
-include("symbol.jl")
-include("sample.jl")
+include("_test_ft.jl")
+include("_test_ftbdd.jl")
+include("_test_ftbdd_mcs.jl")
+include("_test_ftbdd_prob.jl")
+
+# include("symbol.jl")
+# include("sample.jl")
 
 # include("hybrid.jl")
 
-include("mcs.jl")
+# include("mcs.jl")
