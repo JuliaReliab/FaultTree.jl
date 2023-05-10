@@ -3,12 +3,17 @@ import DD.BDD
 export mcs
 
 """
-   mcs(ft)
+    mcs(ft::FTree, top::AbstractFTObject)
+    mcs(ft::FTree, top::BDD.AbstractNode)
 
 Get MCS (minimal cut set) of FaultTree. The result is a set of vectors of event symbols.
 """
-function mcs(f::BDD.AbstractNode)
-    _mcs(BDD.forest(f), f)
+function mcs(ft::FTree, top::AbstractFTObject)
+    mcs(ft, ftbdd!(ft, top))
+end
+
+function mcs(ft::FTree, top::BDD.AbstractNode)
+    _mcs(getbdd(ft), top)
 end
 
 function _mcs(b::BDD.Forest, f::BDD.AbstractNode)

@@ -121,11 +121,61 @@ On the other hand, The operators `|` and `+` correspond to OR gate. The code to 
 top = (A | B) & C
 ```
 
-Finally, we build an instance of fault tree by using the function `ftree`:
-```julia
-ft = ftree(top)
-```
-This function generates a BDD (binary decision diagram) from the structure of fault tree.
-
 ## Fault tree analysis
 
+For the fault tree analysis, we first generate the context of fault tree which stores the information on events and BDD:
+```julia
+ft = FTree()
+```
+Next we define the environment to store the values (probabilities) of event occurrences. There are two ways to create the environment. First is to use the macro:
+```julia
+env = @parameters begin
+    A = 0.1
+    B = 0.3
+    C = 0.5
+end
+```
+where A, B, C should be coincide with the symbols of events. In this example, we provide the probabilities 0.1, 0.3, 0.5 to the events A, B, C, and `env` is the identifier of the environemnt. Since the instance of environment is `Dict{Symbol,Tv} where Tv <: Number`, we can make it directly:
+```julia
+env = Dict(
+    :A => 0.1,
+    :B => 0.3,
+    :C = 0.5)
+```
+Note that the key value should be symbols.
+
+By using the context of FT and the environment, we compute the probability of top event:
+```julia
+prob(ft, top, env)
+```
+Also we get MCS of FT as follow.
+```julia
+mcs(ft, top)
+```
+These two functions `prob` and `mcs` involve the procedure to make BDD from the given fault tree node. To avoid the redundancy of computation, we can also execute
+```julia
+x = ftbdd!(ft, top)
+prob(ft, x, env)
+mcs(ft, x)
+```
+In the above, the function `ftbdd!` is to create BDD and returns the corresponding BDD node. When a BDD node is used as arguments of `prob` and `mcs`, it can avoid to make BDD. Also, the function `cprob` computes the complement probability of top event.
+
+Finally, we give the example:
+```julia
+ft = FTree()
+
+@basic A
+@repeated B, C
+
+top = (A | B) & C
+
+env = @parameters begin
+    A = 0.1
+    B = 0.3
+    C = 0.5
+end
+
+x = ftbdd!(ft, top)
+prob(ft, x, env)
+mcs(ft, x)
+```

@@ -2,9 +2,8 @@ import DD.BDD
 
 export FTree
 export getbdd
-export gettop
 export nvars
-export ftree
+export ftbdd!
 
 """
     FTree
@@ -25,6 +24,7 @@ mutable struct FTree
     basicinv::Dict{Symbol,Symbol}
     repeated::Dict{Symbol,BDD.AbstractNode}
     desc::Dict{AbstractFTEvent,String}
+    cache::Dict{AbstractFTObject,BDD.AbstractNode}
 
     function FTree()
         f = new()
@@ -34,6 +34,7 @@ mutable struct FTree
         f.basicinv = Dict{Symbol,Symbol}()
         f.repeated = Dict{Symbol,BDD.AbstractNode}()
         f.desc = Dict{AbstractFTEvent,String}()
+        f.cache = Dict{AbstractFTObject,BDD.AbstractNode}()
         f
     end
 end
@@ -45,15 +46,6 @@ Get the BDD context.
 """
 function getbdd(ft::FTree)
     ft.bdd
-end
-
-"""
-   gettop(ft)
-
-Get the BDD node of FT
-"""
-function gettop(ft::FTree)
-    ft.top
 end
 
 """
@@ -87,12 +79,14 @@ function _nextvar!(ft::FTree, x::Symbol)
 end
 
 """
-    ftree(ft::FTree, top::AbstractFTObject)
+    ftbdd!(ft::FTree, top::AbstractFTObject)
 
-Create FTree.
+Create BDD node from a given FT node.
 """
-function ftree(ft::FTree, top::AbstractFTObject)
-    _tobdd!(ft, top)
+function ftbdd!(ft::FTree, top::AbstractFTObject)
+    get!(ft.cache, top) do
+        _tobdd!(ft, top)
+    end
 end
 
 function _tobdd!(ft::FTree, x::FTAndGate)

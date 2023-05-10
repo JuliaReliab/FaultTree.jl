@@ -1,9 +1,28 @@
 using DD.BDD
 
+@testset "Sample" begin
+    ft = FTree()
+
+    @basic A
+    @repeated B, C
+    
+    top = (A | B) & C
+    
+    env = @parameters begin
+        A = 0.1
+        B = 0.3
+        C = 0.5
+    end
+    
+    x = ftbdd!(ft, top)
+    println(prob(ft, x, env))
+    println(mcs(ft, x))
+end
+
 @testset "Sample0" begin
     ft = FTree()
     @repeated midplane, cooling, power
-    cm = ftree(ft, midplane | cooling | power)
+    cm = ftbdd!(ft, midplane | cooling | power)
 
     env = @parameters begin
         midplane = 0.8
@@ -60,7 +79,7 @@ end
     apps = ftkofn(6, [AS[i] for i = 1:12]...)
     top = apps | pxys
 
-    f = ftree(ft, top)
+    # ftbdd!(ft, top)
     # open("result.txt", "w") do iow
     #     write(iow, todot(gettop(f)))
     # end
@@ -75,8 +94,8 @@ end
         :SWP => 0.1
     )
 
-    @time println(prob(ft, f, env))
-    @time println(prob(ft, f, env))
+    @time println(prob(ft, top, env))
+    @time println(prob(ft, top, env))
 end
 
 # @testset "Sample2" begin

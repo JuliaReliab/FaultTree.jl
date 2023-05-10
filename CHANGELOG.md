@@ -1,3 +1,8 @@
+# 0.6.0
+
+- refactor the fault tree
+- change the function interface
+
 # 0.5.4
 
 - fix the dependency (use SymbolicDiff 0.9.3)

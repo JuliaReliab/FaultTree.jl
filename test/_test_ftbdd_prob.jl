@@ -1,20 +1,20 @@
 using DD.BDD
 
 @testset "FaultTreeBDD_prob1" begin
-    top = ftbasic(:x) & ftbasic(:x)
     ft = FTree()
-    f = ftree(ft, top)
+    top = ftbasic(:x) & ftbasic(:x)
+    ftbdd!(ft, top)
     env = Dict(
         :x => 0.1
     )
-    println(prob(ft, f, env))
+    println(prob(ft, top, env))
 end
 
 @testset "FaultTreeBDD2" begin
+    ft = FTree()
     x = ftbasic(:x)
     top = ftkofn(2, x, x, x)
-    ft = FTree()
-    f = ftree(ft, top)
+    f = ftbdd!(ft, top)
     env = Dict(
         :x => 0.1
     )
@@ -22,10 +22,10 @@ end
 end
 
 @testset "FaultTreeBDD_prob3" begin
+    ft = FTree()
     x = ftrepeated(:x)
     top = ftkofn(2, x, x, x)
-    ft = FTree()
-    f = ftree(ft, top)
+    f = ftbdd!(ft, top)
     env = Dict(
         :x => 0.1
     )
