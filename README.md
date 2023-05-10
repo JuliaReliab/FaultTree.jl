@@ -11,13 +11,15 @@ FaultTree.jl provides a tool to compute the probability based on fault trees.
 This is not in the official package of Julia yet. Please run the following command to install it.
 ```julia
 using Pkg;
+Pkg.add(PackageSpec(url="https://github.com/JuliaReliab/DD.jl.git"))
 Pkg.add(PackageSpec(url="https://github.com/JuliaReliab/FaultTree.jl.git"))
 ```
+The package `DD` is required.
 
 ## Load module
 
 Load the module:
-```
+```julia
 using FaultTree
 ```
 
