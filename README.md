@@ -55,7 +55,7 @@ p_S = (1 - (1 - p_A) (1 - p_B)) p_C
 $$
 This formula is based on the causal relation in the fault tree.
 
-## Building a fault tree
+## Drawing a fault tree
 
 The fault tree consists of events and gates. Each gate has several gates and/or events as children. For the time being, the tool can use the following events and gates.
 
@@ -76,10 +76,7 @@ For example, we consider the following fault tree having two basic events.
 
 ![](./docs/figs/ft2.png)
 
-The bottom nodes have the same label A. However, they are different instances. Let $p_A$ be the failure probability of A. Since the probability of system failure is the probability that two components are failed, it becomes
-$$
-p_S = p_A p_A
-$$
+The bottom nodes have the same label A. However, they are different instances. Let $p_A$ be the failure probability of A. Since the probability of system failure is the probability that two components are failed, it becomes $p_S = p_A p_A$.
 
 ### Repeat event
 
@@ -89,18 +86,46 @@ For example, we consider the following fault tree having two repeat events.
 
 ![](./docs/figs/ft3.png)
 
-The bottom nodes have the same instance. Let $p_A$ be the failure probability of A. Since the probability of system failure is the probability that one component A is failed, it becomes
-$$
-p_S = p_A
-$$
+The bottom nodes have the same instance. Let $p_A$ be the failure probability of A. Since the probability of system failure is the probability that one component A is failed, it becomes $p_S = p_A$.
 
 ### Intermediate event
 
-
+The intermediate event is drawn as a rectangle, which is a just label explaning the output of gates. It does not affect the fault tree analysis.
 
 ### AND gate
 
+The AND gate represents the causal relation that the parent event occurs when all the child events occur. The shape of AND gate is like a cap whose bottom line is a straight.
+
 ### OR gate
 
+The OR gate represents the causal relation that the parent event occurs when any of the child events occurs. The shape of OR gate is like a cap whose bottom line is a curve.  It has two or more child events.
+
 ### k-out-of-n gate
+
+The k-out-of-n gate is a generalized gate from AND/OR gates. It is often called the voting gate. The gate has n child events. When k child events are happend, the upper event is also happend. When k equals n, the n-out-of-n gate is same as AND gate. Also, if k is 1, the 1-out-of-n gate becomes OR gate. The shape of k-out-of-n gate is the same as OR gate. It can be distinguished by the label. The following picture shows the 2-out-of-3 gate.
+
+![](./docs/figs/kn.png)
+
+## Building a fault tree
+
+In the tool, the fault tree is built from bottom to up. First we define the events used in the tree:
+```julia
+@basic A
+@repeat B, C
+```
+The above is the Julia code to define the events. By using macros, we define three events having the symbols `A`, `B` and `C`. The event `A` is the basic event. The events `B` and `C` are the repeat events.
+
+The AND/OR gates can be defined by the common operations of Julia. The operators `&` and `*` correspond to AND gate.
+On the other hand, The operators `|` and `+` correspond to OR gate. The code to build the fault tree shown in the presious section is
+```julia
+top = (A | B) & C
+```
+
+Finally, we build an instance of fault tree by using the function `ftree`:
+```julia
+ft = ftree(top)
+```
+This function generates a BDD (binary decision diagram) from the structure of fault tree.
+
+## Fault tree analysis
 
