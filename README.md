@@ -62,6 +62,7 @@ The fault tree consists of events and gates. Each gate has several gates and/or 
 - Events
     - Basic event
     - Repeat event
+    - Intermediate event
 - Gates
     - AND gate
     - OR gate
@@ -69,7 +70,33 @@ The fault tree consists of events and gates. Each gate has several gates and/or 
 
 ### Basic event
 
+The basic event is a bottom node of fault tree (leaf node), and represents an event such as a component failure. In the diagram, it can be drawn as a circle. The difference between basic and repeat events appers when the nodes having the same label are placed as two or more leaf nodes. In the case of basic event, they are exactly copied, i.e., the instances of leaf nodes are different. Therefore, even if one event occurs, it does not affect another one that is copied.
+
+For example, we consider the following fault tree having two basic events.
+
+![](./docs/figs/ft2.png)
+
+The bottom nodes have the same label A. However, they are different instances. Let $p_A$ be the failure probability of A. Since the probability of system failure is the probability that two components are failed, it becomes
+$$
+p_S = p_A p_A
+$$
+
 ### Repeat event
+
+The repeat event is a bottom node of fault tree (leaf node), and represents an event such as a component failure. In the diagram, similar to the basic event, it can be drawn as a circle (sometimes, it is distiguished as a coloer). The difference between basic and repeat events appers when the nodes having the same label are placed as two or more leaf nodes. In the case of repeat event, they are exactly same instances. Therefore, when one event occurs, other copied events are also happen.
+
+For example, we consider the following fault tree having two repeat events.
+
+![](./docs/figs/ft3.png)
+
+The bottom nodes have the same instance. Let $p_A$ be the failure probability of A. Since the probability of system failure is the probability that one component A is failed, it becomes
+$$
+p_S = p_A
+$$
+
+### Intermediate event
+
+
 
 ### AND gate
 
