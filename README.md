@@ -142,7 +142,8 @@ where A, B, C should be coincide with the symbols of events. In this example, we
 env = Dict(
     :A => 0.1,
     :B => 0.3,
-    :C = 0.5)
+    :C => 0.5
+)
 ```
 Note that the key value should be symbols.
 
