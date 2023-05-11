@@ -1,3 +1,8 @@
+# 0.6.1
+
+- add computation of gradient
+- add importance measures
+
 # 0.6.0
 
 - refactor the fault tree

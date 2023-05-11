@@ -60,7 +60,7 @@ end
     end
     top = x & x & y
     ftbdd!(ft, top)
-    println(prob(ft, top, env, type=:G))
+    println(prob(ft, top, env))
 end
 
 @testset "FaultTreeBDD_macro3" begin
@@ -72,7 +72,7 @@ end
     end
     top = x & x & y
     f = ftbdd!(ft, top)
-    println(prob(ft, f, env, type=:G))
+    println(prob(ft, f, env))
 end
 
 @testset "FaultTreeBDD_macro3" begin
@@ -80,7 +80,7 @@ end
     @repeated x, y
     top = x & x & y
     f = ftbdd!(ft, top)
-    p = prob(ft, top, type=:G,
+    p = prob(ft, top,
         @parameters begin
             x = 0.9
             y = 0.8
@@ -90,8 +90,7 @@ end
 
 @testset "FaultTreeBDD_macro3" begin
     ft = FTree()
-    p = prob(type=:G,
-        ft,
+    p = prob(ft,
         let
             @repeated x, y
             top = x & x & y
