@@ -127,6 +127,6 @@ end
     println(mcs(ft, top))
     println(smeas(ft, top))
     println(bmeas(ft, top, env))
-    println(cmeas(ft, top, env))
-    println(ccmeas(ft, top, env))
+    println(c1meas(ft, top, env))
+    println(c0meas(ft, top, env))
 end

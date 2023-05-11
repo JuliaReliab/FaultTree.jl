@@ -100,6 +100,28 @@ end
     @time println(smeas(ft, top))
 end
 
+@testset "example" begin
+    ft = FTree()
+
+    @basic A
+    @repeated B, C
+    
+    top = (A | B) & C
+    
+    env = @parameters begin
+        A = 0.9
+        B = 0.98
+        C = 0.89
+    end
+    
+    println(prob(ft, top, env))
+    println(mcs(ft, top))
+    println(smeas(ft, top))
+    println(bmeas(ft, top, env))
+    println(c1meas(ft, top, env))
+    println(c0meas(ft, top, env))
+end
+
 # @testset "Sample2" begin
 #     @ftree CM(midplane, cooling, power) begin
 #         @repeated begin

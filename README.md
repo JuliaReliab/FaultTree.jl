@@ -151,7 +151,10 @@ By using the context of FT and the environment, we compute the probability of to
 ```julia
 prob(ft, top, env)
 ```
-Also we get MCS of FT as follow.
+
+### MCS
+
+We also get MCS of FT as follow.
 ```julia
 mcs(ft, top)
 ```
@@ -181,4 +184,55 @@ end
 x = ftbdd!(ft, top)
 prob(ft, x, env)
 mcs(ft, x)
+```
+
+### Importance measures
+
+The tool computes the following importance measures:
+- `smeas`: Compute S-measure (Structure importance measure)
+- `bmeas`: Compute B-measure (Birnbaum imporance measure)
+- `c1meas`, `c0meas`: C-measure (Criticality importance measure)
+
+#### S-measure
+
+The function `smeas(ft, top)` computes the structure importance (S-measure) of FT. The result is represented by rational values.
+S-measure is defined as the fraction of the number of critical cases over the total number of cases.
+The critical case is the case where the system status changes when the status of target component changes.
+
+#### B-measure
+
+The function `bmeas(ft, top, env)` computes the Birnbaum importance (B-measure) of FT.
+B-measure is defined as the probability that the system takes critical cases on the target component.
+
+#### C-measure
+
+The function `c1meas(ft, top, env)` computes the criticality importance on 1 (C1-measure) of FT.
+C1-measure is defined as the conditional probability that the system takes critical cases in which the target component takes 1
+provided that the system takes a status 1. This implies that the contribution of target component to keep the system 1.
+
+The function `c0meas(ft, top, env)` computes the criticality importance on 0 (C0-measure) of FT.
+C0-measure is defined as the conditional probability that the system takes critical cases in which the target component takes 0
+provided that the system takes a status 0. This implies that the contribution of target component to keep the system 0.
+
+```julia
+ft = FTree()
+
+@basic A
+@repeated B, C
+
+top = (A | B) & C
+
+env = @parameters begin
+    A = 0.9
+    B = 0.98
+    C = 0.89
+end
+
+x = ftbdd!(ft, top)
+prob(ft, x, env)
+mcs(ft, x)
+smeas(ft, top)
+bmeas(ft, top, env)
+c1meas(ft, top, env)
+c0meas(ft, top, env)
 ```
