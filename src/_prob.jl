@@ -62,11 +62,15 @@ function _prob(op1::Tc, op2::Val{:F}, ft::FTree, f::BDD.AbstractNonTerminalNode,
 end
 
 function _prob(::Val{:CDF}, ::Val{:F}, ft::FTree, f::BDD.AbstractTerminalNode, env::Dict{Symbol,Tv}, bddcache)::Tv where Tv <: Number
-    BDD.iszero(f) ? Tv(0) : Tv(1)
+    get!(bddcache, BDD.id(f)) do
+        BDD.iszero(f) ? Tv(0) : Tv(1)
+    end
 end
 
 function _prob(::Val{:CCDF}, ::Val{:F}, ft::FTree, f::BDD.AbstractTerminalNode, env::Dict{Symbol,Tv}, bddcache)::Tv where Tv <: Number
-    BDD.iszero(f) ? Tv(1) : Tv(0)
+    get!(bddcache, BDD.id(f)) do
+        BDD.iszero(f) ? Tv(1) : Tv(0)
+    end
 end
 
 function _prob(op1::Tc, op2::Val{:G}, ft::FTree, f::BDD.AbstractNonTerminalNode, env::Dict{Symbol,Tv}, bddcache)::Tv where {Tc, Tv <: Number}
@@ -84,11 +88,15 @@ function _prob(op1::Tc, op2::Val{:G}, ft::FTree, f::BDD.AbstractNonTerminalNode,
 end
 
 function _prob(::Val{:CDF}, ::Val{:G}, ft::FTree, f::BDD.AbstractTerminalNode, env::Dict{Symbol,Tv}, bddcache)::Tv where Tv <: Number
-    BDD.iszero(f) ? Tv(1) : Tv(0)
+    get!(bddcache, BDD.id(f)) do
+        BDD.iszero(f) ? Tv(1) : Tv(0)
+    end
 end
 
 function _prob(::Val{:CCDF}, ::Val{:G}, ft::FTree, f::BDD.AbstractTerminalNode, env::Dict{Symbol,Tv}, bddcache)::Tv where Tv <: Number
-    BDD.iszero(f) ? Tv(0) : Tv(1)
+    get!(bddcache, BDD.id(f)) do
+        BDD.iszero(f) ? Tv(0) : Tv(1)
+    end
 end
 
 

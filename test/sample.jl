@@ -96,6 +96,7 @@ end
 
     @time println(prob(ft, top, env))
     @time println(prob(ft, top, env))
+    @time println(grad(ft, top, env))
 end
 
 # @testset "Sample2" begin

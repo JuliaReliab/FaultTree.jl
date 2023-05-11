@@ -10,6 +10,9 @@ include("_test_ftbdd_macro.jl")
 
 # include("symbol.jl")
 
+# include("hybrid.jl")
+
+include("_test_ftbdd_grad.jl")
+
 include("sample.jl")
 
-# include("hybrid.jl")
