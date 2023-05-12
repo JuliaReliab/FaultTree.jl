@@ -162,6 +162,7 @@ end
     println(mcs(ft, te))
     println(smeas(ft, te))
     println(bmeas(ft, te, env))
+    println(vars_all(ft))
     # println(c1meas(ft, te, env))
     # println(c0meas(ft, te, env))
 end

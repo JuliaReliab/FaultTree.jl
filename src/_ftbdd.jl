@@ -2,6 +2,9 @@ import DD.BDD
 
 export FTree
 export getbdd
+export vars_basic
+export vars_repeat
+export vars_all
 export nvars
 export ftbdd!
 
@@ -46,6 +49,33 @@ Get the BDD context.
 """
 function getbdd(ft::FTree)
     ft.bdd
+end
+
+"""
+    vars_basic(ft)
+
+Get the vector of symbols of basic variables
+"""
+function vars_basic(ft::FTree)
+    sort([k for (k,_) = ft.basic])
+end
+
+"""
+    vars_repeat(ft)
+
+Get the vector of symbols of repeated variables
+"""
+function vars_repeat(ft::FTree)
+    sort([k for (k,_) = ft.repeated])
+end
+
+"""
+    vars_all(ft)
+
+Get the vector of symbols of variables
+"""
+function vars_all(ft::FTree)
+    sort(vcat([k for (k,_) = ft.basic], [k for (k,_) = ft.repeated]...))
 end
 
 """
