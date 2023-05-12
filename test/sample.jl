@@ -122,6 +122,49 @@ end
     println(c0meas(ft, top, env))
 end
 
+@testset "example2" begin
+    ft = FTree()
+
+    @basic TMB
+    @basic TMC
+    @repeated TMA
+    @basic DAE
+    @basic ABE
+    @basic ABAC
+    @repeated AB
+    @basic I
+    @basic PF
+    @basic D
+    @repeated ABOL
+
+    orr1 = TMB | TMC | TMA
+    orr2 = TMA | DAE
+    orr3 = ABE | ABAC | AB
+    orr4 = AB | I | ABOL
+    orr5 = AB | PF | ABOL
+    te = orr1 | orr2 | orr3 | orr4 | orr5 | D
+
+    env = @parameters begin
+        TMB = 0.001
+        TMC = 0.001
+        TMA = 0.001
+        DAE = 0.001
+        ABE = 0.001
+        ABAC = 0.001
+        AB = 0.001
+        I = 0.001
+        PF = 0.001
+        D = 0.001
+        ABOL = 0.001
+    end
+    
+    println(prob(ft, te, env))
+    println(mcs(ft, te))
+    println(smeas(ft, te))
+    println(bmeas(ft, te, env))
+    # println(c1meas(ft, te, env))
+    # println(c0meas(ft, te, env))
+end
 # @testset "Sample2" begin
 #     @ftree CM(midplane, cooling, power) begin
 #         @repeated begin
