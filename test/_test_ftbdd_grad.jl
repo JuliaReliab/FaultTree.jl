@@ -3,7 +3,7 @@ import FaultTree: _tsort
 
 @testset "FaultTreeBDD_tsort1" begin
     ft = FTree()
-    @repeated x, y, z
+    @repeat x, y, z
     top = x & y | z
     f = ftbdd!(ft, top)
     println(todot(f))
@@ -12,7 +12,7 @@ end
 
 @testset "FaultTreeBDD_grad1" begin
     ft = FTree()
-    @repeated x, y, z
+    @repeat x, y, z
     top = x & y | z
     f = ftbdd!(ft, top)
     env = @parameters begin
@@ -26,7 +26,7 @@ end
 
 @testset "FaultTreeBDD_grad1" begin
     ft = FTree()
-    @repeated x, y, z
+    @repeat x, y, z
     top = x & y | z
     f = ftbdd!(ft, top)
     env = @parameters begin
@@ -40,7 +40,7 @@ end
 
 @testset "FaultTreeBDD_grad2" begin
     ft = FTree()
-    @repeated a, b, c, d, e
+    @repeat a, b, c, d, e
     x1 = b & c & e
     x2 = b & d
     x3 = a & e
@@ -61,7 +61,7 @@ end
 
 @testset "FaultTreeBDD_grad2" begin
     ft = FTree()
-    @repeated a, b, c, d, e
+    @repeat a, b, c, d, e
     x1 = b & c & e
     x2 = b & d
     x3 = a & e
@@ -82,7 +82,7 @@ end
 
 @testset "FaultTreeBDD_grad3" begin
     ft = FTree()
-    @repeated a, b, c, d, e
+    @repeat a, b, c, d, e
     x1 = b & c & e
     x2 = b & d
     x3 = a & e
@@ -102,7 +102,7 @@ end
 
 @testset "FaultTreeBDD_grad5" begin
     ft = FTree()
-    @repeated x1, y1, z1, x2, y2, z2
+    @repeat x1, y1, z1, x2, y2, z2
     xx1 = x1 & y1 & z1
     xx2 = x2 & y2 & z2
     top = xx1 | xx2
@@ -111,7 +111,7 @@ end
 
 @testset "FaultTreeBDD_grad6" begin
     ft = FTree()
-    @repeated a, b, c, d, e
+    @repeat a, b, c, d, e
     x1 = b & c & e
     x2 = b & d
     x3 = a & e

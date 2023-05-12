@@ -4,7 +4,7 @@ using DD.BDD
     ft = FTree()
 
     @basic A
-    @repeated B, C
+    @repeat B, C
     
     top = (A | B) & C
     
@@ -21,7 +21,7 @@ end
 
 @testset "Sample0" begin
     ft = FTree()
-    @repeated midplane, cooling, power
+    @repeat midplane, cooling, power
     cm = ftbdd!(ft, midplane | cooling | power)
 
     env = @parameters begin
@@ -37,11 +37,11 @@ end
 @testset "Sample1" begin
     ft = FTree()
 
-    Node = [ftrepeated(Symbol("Node_", x)) for x = 1:8]
-    nic1 = [ftrepeated(Symbol("nic1_", x)) for x = 1:8]
-    nic2 = [ftrepeated(Symbol("nic2_", x)) for x = 1:8]
-    CM = [ftrepeated(Symbol("CM", i)) for i = 1:2]
-    esw = [ftrepeated(Symbol("esw", i)) for i = 1:4]
+    Node = [ftrepeat(Symbol("Node_", x)) for x = 1:8]
+    nic1 = [ftrepeat(Symbol("nic1_", x)) for x = 1:8]
+    nic2 = [ftrepeat(Symbol("nic2_", x)) for x = 1:8]
+    CM = [ftrepeat(Symbol("CM", i)) for i = 1:2]
+    esw = [ftrepeat(Symbol("esw", i)) for i = 1:4]
     @basic SW, SWP
 
     eth1 = Vector{AbstractFTObject}(undef, 8)
@@ -104,7 +104,7 @@ end
     ft = FTree()
 
     @basic A
-    @repeated B, C
+    @repeat B, C
     
     top = (A | B) & C
     
@@ -127,15 +127,15 @@ end
 
     @basic TMB
     @basic TMC
-    @repeated TMA
+    @repeat TMA
     @basic DAE
     @basic ABE
     @basic ABAC
-    @repeated AB
+    @repeat AB
     @basic I
     @basic PF
     @basic D
-    @repeated ABOL
+    @repeat ABOL
 
     orr1 = TMB | TMC | TMA
     orr2 = TMA | DAE
@@ -167,7 +167,7 @@ end
 end
 # @testset "Sample2" begin
 #     @ftree CM(midplane, cooling, power) begin
-#         @repeated begin
+#         @repeat begin
 #             MP = midplane
 #             Cool = cooling
 #             Pwr = power
@@ -176,7 +176,7 @@ end
 #     end
 
 #     @ftree BLADE(base, processor, memory, disk, os) begin
-#         @repeated begin
+#         @repeat begin
 #             Base = base
 #             CPU = processor
 #             Mem = memory
@@ -187,7 +187,7 @@ end
 #     end
 
 #     @ftree CLUSTER(CM, switch, appserver, proxy, BLADE, nic) begin
-#         @repeated begin
+#         @repeat begin
 #             CM1 = prob(CM)
 #             CM2 = prob(CM)
 #             esw1 = switch
@@ -199,7 +199,7 @@ end
 #             SW = appserver
 #             SWP = proxy
 #         end
-#         @repeated begin
+#         @repeat begin
 #             Node_A = prob(BLADE)
 #             nic1_A = nic
 #             nic2_A = nic
@@ -324,7 +324,7 @@ end
 
 # @testset "Sample3-" begin
 #     @ftree CLUSTER(CM, switch, appserver, proxy, BLADE, nic) begin
-#         @repeated begin
+#         @repeat begin
 #             CM1 = CM
 #             CM2 = CM
 #             esw1 = switch
@@ -336,7 +336,7 @@ end
 #             SW = appserver
 #             SWP = proxy
 #         end
-#         @repeated begin
+#         @repeat begin
 #             Node_A = BLADE
 #             nic1_A = nic
 #             nic2_A = nic
@@ -445,7 +445,7 @@ end
 
 # @testset "Sample3" begin
 #     @ftree CM(midplane, cooling, power) begin
-#         @repeated begin
+#         @repeat begin
 #             MP = midplane
 #             Cool = cooling
 #             Pwr = power
@@ -454,7 +454,7 @@ end
 #     end
 
 #     @ftree BLADE(base, processor, memory, disk, os) begin
-#         @repeated begin
+#         @repeat begin
 #             Base = base
 #             CPU = processor
 #             Mem = memory
@@ -465,7 +465,7 @@ end
 #     end
 
 #     @ftree CLUSTER(CM, switch, appserver, proxy, BLADE, nic) begin
-#         @repeated begin
+#         @repeat begin
 #             CM1 = prob(CM)
 #             CM2 = prob(CM)
 #             esw1 = switch
@@ -477,7 +477,7 @@ end
 #             SW = appserver
 #             SWP = proxy
 #         end
-#         @repeated begin
+#         @repeat begin
 #             Node_A = prob(BLADE)
 #             nic1_A = nic
 #             nic2_A = nic
@@ -608,7 +608,7 @@ end
 
 # @testset "Sample4" begin
 #     @ftree CM(midplane, cooling, power) begin
-#         @repeated begin
+#         @repeat begin
 #             MP = midplane
 #             Cool = cooling
 #             Pwr = power
@@ -617,7 +617,7 @@ end
 #     end
 
 #     @ftree BLADE(base, processor, memory, disk, os) begin
-#         @repeated begin
+#         @repeat begin
 #             Base = base
 #             CPU = processor
 #             Mem = memory
@@ -628,7 +628,7 @@ end
 #     end
 
 #     @ftree CLUSTER(CM, switch, appserver, proxy, BLADE, nic) begin
-#         @repeated begin
+#         @repeat begin
 #             CM1 = CM
 #             CM2 = CM
 #             esw1 = switch
@@ -640,7 +640,7 @@ end
 #             SW = appserver
 #             SWP = proxy
 #         end
-#         @repeated begin
+#         @repeat begin
 #             Node_A = BLADE
 #             nic1_A = nic
 #             nic2_A = nic

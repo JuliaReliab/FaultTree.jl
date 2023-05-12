@@ -19,9 +19,9 @@ end
 
 @testset "FaultTreeBDD_MCS3" begin
     ft = FTree()
-    x = ftrepeated(:x)
-    y = ftrepeated(:y)
-    z = ftrepeated(:z)
+    x = ftrepeat(:x)
+    y = ftrepeat(:y)
+    z = ftrepeat(:z)
     top = x * y + z
     f = ftbdd!(ft, top)
     result = mcs(ft, top)

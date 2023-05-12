@@ -113,7 +113,7 @@ The k-out-of-n gate is a generalized gate from AND/OR gates. It is often called 
 In the tool, the fault tree is built from bottom to up. First we define the events used in the tree:
 ```julia
 @basic A
-@repeated B, C
+@repeat B, C
 ```
 The above is the Julia code to define the events. By using macros, we define three events having the symbols `A`, `B` and `C`. The event `A` is the basic event. The events `B` and `C` are the repeated events.
 
@@ -171,7 +171,7 @@ Finally, we give the example:
 ft = FTree()
 
 @basic A
-@repeated B, C
+@repeat B, C
 
 top = (A | B) & C
 
@@ -218,7 +218,7 @@ provided that the system takes a status 0. This implies that the contribution of
 ft = FTree()
 
 @basic A
-@repeated B, C
+@repeat B, C
 
 top = (A | B) & C
 
