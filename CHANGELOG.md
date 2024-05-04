@@ -1,3 +1,7 @@
+# 0.7.2
+
+- Replace MCS algorithm with minsol
+
 # 0.7.1
 
 - add smeas, bmeas, c0meas, c1meas which take a BDD node

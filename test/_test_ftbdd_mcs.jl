@@ -27,3 +27,16 @@ end
     result = mcs(ft, top)
     println(result)
 end
+
+@testset "FaultTreeBDD_MCS4" begin
+    ft = FTree()
+    x = ftrepeated(ft, :x)
+    y = ftrepeated(ft, :y)
+    z = ftrepeated(ft, :z)
+    top = (x | z) & (y | z)
+    f = ftbdd!(ft, top)
+    result = mcs(ft, top)
+    println(result)
+
+    println(todot(minsol(f)))
+end
