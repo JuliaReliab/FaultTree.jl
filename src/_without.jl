@@ -10,7 +10,7 @@ function _without(b::BDD.Forest, f::BDD.AbstractNonTerminalNode, g::BDD.Abstract
             n1 = _without(b, BDD.get_one(f), g, cache)
             BDD.node!(b, f.header, n0, n1)
         elseif BDD.level(f) < BDD.level(g)
-            _without(b, f, BB.BDD.get_zero(g), cache)
+            _without(b, f, BDD.get_zero(g), cache)
         else
             n0 = _without(b, BDD.get_zero(f), BDD.get_zero(g), cache)
             n1 = _without(b, BDD.get_one(f), BDD.get_one(g), cache)

@@ -1,6 +1,7 @@
 import DD.BDD
 
 export mcs
+export extractpath
 
 """
     mcs(ft::FTree, top::AbstractFTObject)
@@ -18,6 +19,25 @@ end
 
 function _mcs(::BDD.Forest, f::BDD.AbstractNode)
     minsol(f)
+end
+
+function extractpath(f::BDD.AbstractNode)
+    pathset = Vector{Symbol}[]
+    _extract(f, Symbol[], pathset)
+    return pathset
+end
+
+function _extract(f::BDD.AbstractNonTerminalNode, path::Vector{Symbol}, pathset::Vector{Vector{Symbol}})
+    _extract(BDD.get_one(f), Symbol[path..., BDD.label(f)], pathset)
+    _extract(BDD.get_zero(f), Symbol[path...], pathset)
+    nothing
+end
+
+function _extract(f::BDD.AbstractTerminalNode, path::Vector{Symbol}, pathset::Vector{Vector{Symbol}})
+    if BDD.isone(f)
+        push!(pathset, path)
+    end
+    nothing
 end
 
 # function _mcs(b::BDD.Forest, f::BDD.AbstractNode)

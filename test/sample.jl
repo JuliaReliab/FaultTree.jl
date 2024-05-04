@@ -115,7 +115,7 @@ end
     end
     
     println(prob(ft, top, env=env))
-    println(mcs(ft, top))
+    println(extractpath(mcs(ft, top)))
     println(smeas(ft, top))
     println(bmeas(ft, top, env=env))
     println(c1meas(ft, top, env=env))

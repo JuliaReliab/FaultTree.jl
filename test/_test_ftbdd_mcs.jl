@@ -38,5 +38,7 @@ end
     result = mcs(ft, top)
     println(result)
 
-    println(todot(minsol(f)))
+    b = minsol(f)
+    println(todot(b))
+    println(extractpath(b))
 end
