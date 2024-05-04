@@ -1,3 +1,5 @@
+import DD.BDD
+
 export smeas
 export bmeas
 export c1meas
@@ -11,7 +13,10 @@ S-measure is defined as the fraction of the number of critical cases over the to
 The critical case is the case where the system status changes when the status of target component changes.
 """
 function smeas(ft::FTree, top::AbstractFTObject)
-    f = ftbdd!(ft, top)
+    smeas(ft, ftbdd!(ft, top))
+end
+
+function smeas(ft::FTree, f::BDD.AbstractNode)
     env = Dict{Symbol,Rational}([k => 1//2 for (k,_) = ft.basic]...,
     [k => 1//2 for (k,_) = ft.repeated]...)
     grad(ft, f, env=env)
@@ -24,7 +29,10 @@ Compute the Birnbaum importance (B-measure) of FT.
 B-measure is defined as the probability that the system takes critical cases on the target component.
 """
 function bmeas(ft::FTree, top::AbstractFTObject; env::Dict{Symbol,Tv} = getenv(ft)) where Tv <: Number
-    f = ftbdd!(ft, top)
+    bmeas(ft, ftbdd!(ft, top), env=env)
+end
+
+function bmeas(ft::FTree, f::BDD.AbstractNode; env::Dict{Symbol,Tv} = getenv(ft)) where Tv <: Number
     grad(ft, f, env=env)
 end
 
@@ -39,7 +47,10 @@ provided that the system takes a status 1. This implies that the contribution of
 When the top event means the system failure, C1-measure represents the contribution to the system failure of each component.
 """
 function c1meas(ft::FTree, top::AbstractFTObject; env::Dict{Symbol,Tv} = getenv(ft)) where Tv <: Number
-    f = ftbdd!(ft, top)
+    c1meas(ft, ftbdd!(ft, top), env=env)
+end
+
+function c1meas(ft::FTree, f::BDD.AbstractNode; env::Dict{Symbol,Tv} = getenv(ft)) where Tv <: Number
     bddcache = Dict()
     p = prob(ft, f, env=env, bddcache=bddcache)
     b = grad(ft, f, env=env, bddcache=bddcache)
@@ -54,7 +65,10 @@ C0-measure is defined as the conditional probability that the system takes criti
 provided that the system takes a status 0. This implies that the contribution of target component to keep the system 0.
 """
 function c0meas(ft::FTree, top::AbstractFTObject; env::Dict{Symbol,Tv} = getenv(ft)) where Tv <: Number
-    f = ftbdd!(ft, top)
+    c0meas(ft, ftbdd!(ft, top), env=env)
+end
+
+function c0meas(ft::FTree, f::BDD.AbstractNode; env::Dict{Symbol,Tv} = getenv(ft)) where Tv <: Number
     bddcache = Dict()
     p = prob(ft, f, env=env, bddcache=bddcache)
     b = grad(ft, f, env=env, bddcache=bddcache)

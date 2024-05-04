@@ -1,3 +1,7 @@
+# 0.7.1
+
+- add smeas, bmeas, c0meas, c1meas which take a BDD node
+
 # 0.7.0
 
 - interface has been changed.

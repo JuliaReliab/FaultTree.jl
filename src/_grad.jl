@@ -57,7 +57,7 @@ function cgrad(ft::FTree, f::BDD.AbstractNode; env::Dict{Symbol,Tv} = getenv(ft)
     gradevent
 end
 
-function _grad(op1::Tc, op2::Val{:F}, ft::FTree,
+function _grad(::Tc, ::Val{:F}, ft::FTree,
     f::BDD.AbstractNonTerminalNode, env::Dict{Symbol,Tv},
     bddcache, gradcache, gradevent) where {Tc, Tv <: Number}
     w = gradcache[BDD.id(f)]
@@ -80,13 +80,13 @@ end
 
 function _grad(::Val{:CDF}, ::Val{:F}, ft::FTree,
     f::BDD.AbstractTerminalNode, env::Dict{Symbol,Tv},
-    bddcache, gradcache, gradevent) where {Tc, Tv <: Number}
+    bddcache, gradcache, gradevent) where {Tv <: Number}
     nothing
 end
 
 function _grad(::Val{:CCDF}, ::Val{:F}, ft::FTree,
     f::BDD.AbstractTerminalNode, env::Dict{Symbol,Tv},
-    bddcache, gradcache, gradevent) where {Tc, Tv <: Number}
+    bddcache, gradcache, gradevent) where {Tv <: Number}
     nothing
 end
 
