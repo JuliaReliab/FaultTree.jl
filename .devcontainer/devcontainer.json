@@ -1,6 +1,9 @@
 {
     "name": "Julia Dev Container",
-    "image": "julia:latest",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "."
+    },
     "customizations": {
         "vscode": {
             "extensions": [
