@@ -1,7 +1,10 @@
+import DD.BDD
+
 export AbstractFTObject
 export getft
 export AbstractFTGate
 export AbstractFTEvent
+export FTree
 export FTAndGate
 export FTOrGate
 export FTKofNGate
@@ -47,12 +50,57 @@ Abstract type for fault tree events.
 abstract type AbstractFTEvent <: AbstractFTObject end
 
 """
+    FTree
+
+A type for fault tree context.
+
+## Fields
+- `bdd`: An instance of BDD context
+- `nvars`: The number of BDD variables
+- `basic`: The dictionary of basic event. The value is the next index of basic event variable.
+- `repeated`: The dictionary of repeated event.
+- `desc`: A dictionary of descriptions
+"""
+mutable struct FTree
+    bdd::BDD.Forest
+    nvars::Int
+    basic::Dict{Symbol,Int}
+    basicinv::Dict{Symbol,Symbol}
+    repeated::Dict{Symbol,BDD.AbstractNode}
+    desc::Dict{AbstractFTEvent,String}
+    cache::Dict{AbstractFTObject,BDD.AbstractNode}
+    env::Dict{Symbol,Number}
+
+    function FTree()
+        f = new()
+        f.bdd = BDD.bdd()
+        f.nvars = 0
+        f.basic = Dict{Symbol,Int}()
+        f.basicinv = Dict{Symbol,Symbol}()
+        f.repeated = Dict{Symbol,BDD.AbstractNode}()
+        f.desc = Dict{AbstractFTEvent,String}()
+        f.cache = Dict{AbstractFTObject,BDD.AbstractNode}()
+        f.env = Dict{Symbol,Number}()
+        f
+    end
+end
+
+"""
     symbol(x)
 
 Get a symbol of ftevent.
 """
 function symbol(x::AbstractFTEvent)
     x.x
+end
+
+"""
+    getft(x)
+
+Get ft.
+"""
+function getft(x::AbstractFTObject)
+    x.ft
 end
 
 """
@@ -64,10 +112,11 @@ AND gate
 - `args`: a vector of FTNode
 """
 mutable struct FTAndGate <: AbstractFTGate
+    ft::FTree
     args::Vector{<:AbstractFTObject}
 
-    function FTAndGate(args::Vector{<:AbstractFTObject})
-        new(args)
+    function FTAndGate(ft::FTree, args::Vector{<:AbstractFTObject})
+        new(ft, args)
     end
 end
 
@@ -80,10 +129,11 @@ OR gate
 - `args`: a vector of FTNode
 """
 mutable struct FTOrGate <: AbstractFTGate
+    ft::FTree
     args::Vector{<:AbstractFTObject}
 
-    function FTOrGate(args::Vector{<:AbstractFTObject})
-        new(args)
+    function FTOrGate(ft::FTree, args::Vector{<:AbstractFTObject})
+        new(ft, args)
     end
 end
 
@@ -97,11 +147,12 @@ k-out-of-N gate
 - `k`: an integer indicating K
 """
 mutable struct FTKofNGate <: AbstractFTGate
+    ft::FTree
     args::Vector{<:AbstractFTObject}
     k::Int
 
-    function FTKofNGate(args::Vector{<:AbstractFTObject}, k::Int)
-        new(args, k)
+    function FTKofNGate(ft::FTree, args::Vector{<:AbstractFTObject}, k::Int)
+        new(ft, args, k)
     end
 end
 
@@ -114,10 +165,11 @@ Basic event
 - `x`: the symbol indentifying the event
 """
 mutable struct FTBasicEvent <: AbstractFTEvent
+    ft::FTree
     x::Symbol
 
-    function FTBasicEvent(x::Symbol)
-        new(x)
+    function FTBasicEvent(ft::FTree, x::Symbol)
+        new(ft, x)
     end
 end
 
@@ -130,10 +182,11 @@ Repeat event
 - `x`: the symbol indentifying the event
 """
 mutable struct FTRepeatEvent <: AbstractFTEvent
+    ft::FTree
     x::Symbol
 
-    function FTRepeatEvent(x::Symbol)
-        new(x)
+    function FTRepeatEvent(ft::FTree, x::Symbol)
+        new(ft, x)
     end
 end
 
@@ -146,10 +199,11 @@ Intermediate event
 - `x`: the symbol indentifying the event
 """
 mutable struct FTIntermediateEvent <: AbstractFTEvent
+    ft::FTree
     x::AbstractFTGate
 
-    function FTIntermediateEvent(x::AbstractFTGate)
-        new(x)
+    function FTIntermediateEvent(ft::FTree, x::AbstractFTGate)
+        new(ft, x)
     end
 end
 
@@ -160,8 +214,8 @@ end
 
 Create an FTBasicEvent.
 """
-function ftbasic(x::Symbol)
-    FTBasicEvent(x)
+function ftbasic(ft::FTree, x::Symbol)
+    FTBasicEvent(ft, x)
 end
 
 """
@@ -169,8 +223,8 @@ end
 
 Create an FTRpeatEvent.
 """
-function ftrepeated(x::Symbol)
-    FTRepeatEvent(x)
+function ftrepeated(ft::FTree, x::Symbol)
+    FTRepeatEvent(ft, x)
 end
 
 """
@@ -178,8 +232,8 @@ end
 
 Create an FTRpeatEvent.
 """
-function ftintermediate(x::AbstractFTGate)
-    FTIntermediateEvent(x)
+function ftintermediate(ft::FTree, x::AbstractFTGate)
+    FTIntermediateEvent(ft, x)
 end
 
 """
@@ -187,9 +241,9 @@ end
 
 Create an AND gate with x, y...
 """
-function ftand(x::AbstractFTObject, y::Vararg{AbstractFTObject})
+function ftand(ft::FTree, x::AbstractFTObject, y::Vararg{AbstractFTObject})
     args = AbstractFTObject[x, y...]
-    FTAndGate(args)
+    FTAndGate(ft, args)
 end
 
 """
@@ -197,9 +251,9 @@ end
 
 Create an OR gate with x, y...
 """
-function ftor(x::AbstractFTObject, y::Vararg{AbstractFTObject})
+function ftor(ft::FTree, x::AbstractFTObject, y::Vararg{AbstractFTObject})
     args = AbstractFTObject[x, y...]
-    FTOrGate(args)
+    FTOrGate(ft, args)
 end
 
 """
@@ -207,9 +261,9 @@ end
 
 Create an K-out-of-N gate with x, y...
 """
-function ftkofn(k::Int, x::AbstractFTObject, y::Vararg{AbstractFTObject})
+function ftkofn(ft::FTree, k::Int, x::AbstractFTObject, y::Vararg{AbstractFTObject})
     args = AbstractFTObject[x, y...]
-    FTKofNGate(args, k)
+    FTKofNGate(ft, args, k)
 end
 
 ### overloads
@@ -223,17 +277,17 @@ function Base.show(io::IO, x::AbstractFTGate)
 end
 
 function Base.:*(x::AbstractFTObject, y::AbstractFTObject)
-    ftand(x, y)
+    ftand(getft(x), x, y)
 end
 
 function Base.:&(x::AbstractFTObject, y::AbstractFTObject)
-    ftand(x, y)
+    ftand(getft(x), x, y)
 end
 
 function Base.:+(x::AbstractFTObject, y::AbstractFTObject)
-    ftor(x, y)
+    ftor(getft(x), x, y)
 end
 
 function Base.:|(x::AbstractFTObject, y::AbstractFTObject)
-    ftor(x, y)
+    ftor(getft(x), x, y)
 end

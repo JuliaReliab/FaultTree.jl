@@ -15,11 +15,11 @@ Compute the probability of topevent
 - `env`: The dictionary to provide the probability of events
 - `bddcache`: The dictionary to store the intermediate computation results
 """
-function prob(ft::FTree, top::AbstractFTObject, env::Dict{Symbol,Tv}; bddcache = Dict())::Tv where Tv <: Number
-    prob(ft, ftbdd!(ft, top), env, bddcache = bddcache)
+function prob(ft::FTree, top::AbstractFTObject; env::Dict{Symbol,Tv} = getenv(ft), bddcache = Dict())::Tv where Tv <: Number
+    prob(ft, ftbdd!(ft, top), env = env, bddcache = bddcache)
 end
 
-function prob(ft::FTree, f::BDD.AbstractNode, env::Dict{Symbol,Tv}; bddcache = Dict())::Tv where Tv <: Number
+function prob(ft::FTree, f::BDD.AbstractNode; env::Dict{Symbol,Tv} = getenv(ft), bddcache = Dict())::Tv where Tv <: Number
     _prob(Val(:CDF), Val(:F), ft, f, env, bddcache)
 end
 
@@ -35,11 +35,11 @@ Compute the complementary probability of topevent
 - `env`: The dictionary to provide the probability of events
 - `bddcache`: The dictionary to store the intermediate computation results
 """
-function cprob(ft::FTree, top::AbstractFTObject, env::Dict{Symbol,Tv}; bddcache = Dict())::Tv where Tv <: Number
-    cprob(ft, ftbdd!(ft, top), env, bddcache = bddcache)
+function cprob(ft::FTree, top::AbstractFTObject; env::Dict{Symbol,Tv} = getenv(ft), bddcache = Dict())::Tv where Tv <: Number
+    cprob(ft, ftbdd!(ft, top), env = env, bddcache = bddcache)
 end
 
-function cprob(ft::FTree, f::BDD.AbstractNode, env::Dict{Symbol,Tv}; bddcache = Dict())::Tv where Tv <: Number
+function cprob(ft::FTree, f::BDD.AbstractNode; env::Dict{Symbol,Tv} = getenv(ft), bddcache = Dict())::Tv where Tv <: Number
     _prob(Val(:CCDF), Val(:F), ft, f, env, bddcache)
 end
 

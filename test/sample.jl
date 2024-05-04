@@ -3,8 +3,8 @@ using DD.BDD
 @testset "Sample" begin
     ft = FTree()
 
-    @basic A
-    @repeated B, C
+    @basic ft A
+    @repeated ft B, C
     
     top = (A | B) & C
     
@@ -15,13 +15,13 @@ using DD.BDD
     end
     
     x = ftbdd!(ft, top)
-    println(prob(ft, x, env))
+    println(prob(ft, x, env=env))
     println(mcs(ft, x))
 end
 
 @testset "Sample0" begin
     ft = FTree()
-    @repeated midplane, cooling, power
+    @repeated ft midplane, cooling, power
     cm = ftbdd!(ft, midplane | cooling | power)
 
     env = @parameters begin
@@ -30,19 +30,19 @@ end
         power = 0.3
     end
 
-    @time println(prob(ft, cm, env))
-    @time println(prob(ft, cm, env))
+    @time println(prob(ft, cm, env=env))
+    @time println(prob(ft, cm, env=env))
 end
 
 @testset "Sample1" begin
     ft = FTree()
 
-    Node = [ftrepeated(Symbol("Node_", x)) for x = 1:8]
-    nic1 = [ftrepeated(Symbol("nic1_", x)) for x = 1:8]
-    nic2 = [ftrepeated(Symbol("nic2_", x)) for x = 1:8]
-    CM = [ftrepeated(Symbol("CM", i)) for i = 1:2]
-    esw = [ftrepeated(Symbol("esw", i)) for i = 1:4]
-    @basic SW, SWP
+    Node = [ftrepeated(ft, Symbol("Node_", x)) for x = 1:8]
+    nic1 = [ftrepeated(ft, Symbol("nic1_", x)) for x = 1:8]
+    nic2 = [ftrepeated(ft, Symbol("nic2_", x)) for x = 1:8]
+    CM = [ftrepeated(ft, Symbol("CM", i)) for i = 1:2]
+    esw = [ftrepeated(ft, Symbol("esw", i)) for i = 1:4]
+    @basic ft SW, SWP
 
     eth1 = Vector{AbstractFTObject}(undef, 8)
     eth2 = Vector{AbstractFTObject}(undef, 8)
@@ -76,7 +76,7 @@ end
     PX2 = SWP | BS[8] | CM[2]
     pxys = PX1 & PX2
     
-    apps = ftkofn(6, [AS[i] for i = 1:12]...)
+    apps = ftkofn(ft, 6, [AS[i] for i = 1:12]...)
     top = apps | pxys
 
     # ftbdd!(ft, top)
@@ -94,17 +94,17 @@ end
         :SWP => 0.1
     )
 
-    @time println(prob(ft, top, env))
-    @time println(prob(ft, top, env))
-    @time println(grad(ft, top, env))
+    @time println(prob(ft, top, env=env))
+    @time println(prob(ft, top, env=env))
+    @time println(grad(ft, top, env=env))
     @time println(smeas(ft, top))
 end
 
 @testset "example" begin
     ft = FTree()
 
-    @basic A
-    @repeated B, C
+    @basic ft A
+    @repeated ft B, C
     
     top = (A | B) & C
     
@@ -114,12 +114,12 @@ end
         C = 0.89
     end
     
-    println(prob(ft, top, env))
+    println(prob(ft, top, env=env))
     println(mcs(ft, top))
     println(smeas(ft, top))
-    println(bmeas(ft, top, env))
-    println(c1meas(ft, top, env))
-    println(c0meas(ft, top, env))
+    println(bmeas(ft, top, env=env))
+    println(c1meas(ft, top, env=env))
+    println(c0meas(ft, top, env=env))
 end
 
 # @testset "Sample2" begin

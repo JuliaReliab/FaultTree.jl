@@ -3,7 +3,7 @@ import FaultTree: _tsort
 
 @testset "FaultTreeBDD_tsort1" begin
     ft = FTree()
-    @repeated x, y, z
+    @repeated ft x, y, z
     top = x & y | z
     f = ftbdd!(ft, top)
     println(todot(f))
@@ -12,7 +12,7 @@ end
 
 @testset "FaultTreeBDD_grad1" begin
     ft = FTree()
-    @repeated x, y, z
+    @repeated ft x, y, z
     top = x & y | z
     f = ftbdd!(ft, top)
     env = @parameters begin
@@ -20,13 +20,13 @@ end
         y = 0.1
         z = 0.1
     end
-    println(prob(ft, top, env))
-    println(grad(ft, top, env))
+    println(prob(ft, top, env=env))
+    println(grad(ft, top, env=env))
 end
 
 @testset "FaultTreeBDD_grad1" begin
     ft = FTree()
-    @repeated x, y, z
+    @repeated ft x, y, z
     top = x & y | z
     f = ftbdd!(ft, top)
     env = @parameters begin
@@ -34,13 +34,13 @@ end
         y = 1//2
         z = 1//2
     end
-    println(prob(ft, top, env))
-    println(grad(ft, top, env))
+    println(prob(ft, top, env=env))
+    println(grad(ft, top, env=env))
 end
 
 @testset "FaultTreeBDD_grad2" begin
     ft = FTree()
-    @repeated a, b, c, d, e
+    @repeated ft a, b, c, d, e
     x1 = b & c & e
     x2 = b & d
     x3 = a & e
@@ -54,14 +54,14 @@ end
         e = 1//2
     end
     println(mcs(ft, top))
-    println(prob(ft, top, env))
-    println(grad(ft, top, env))
-    println(cgrad(ft, top, env))
+    println(prob(ft, top, env=env))
+    println(grad(ft, top, env=env))
+    println(cgrad(ft, top, env=env))
 end
 
 @testset "FaultTreeBDD_grad2" begin
     ft = FTree()
-    @repeated a, b, c, d, e
+    @repeated ft a, b, c, d, e
     x1 = b & c & e
     x2 = b & d
     x3 = a & e
@@ -75,14 +75,14 @@ end
         e = 0.4
     end
     println(mcs(ft, top))
-    println(prob(ft, top, env))
-    println(grad(ft, top, env))
-    println(cgrad(ft, top, env))
+    println(prob(ft, top, env=env))
+    println(grad(ft, top, env=env))
+    println(cgrad(ft, top, env=env))
 end
 
 @testset "FaultTreeBDD_grad3" begin
     ft = FTree()
-    @repeated a, b, c, d, e
+    @repeated ft a, b, c, d, e
     x1 = b & c & e
     x2 = b & d
     x3 = a & e
@@ -93,7 +93,7 @@ end
 
 @testset "FaultTreeBDD_grad4" begin
     ft = FTree()
-    @basic x, y, z
+    @basic ft x, y, z
     x1 = x & y & z
     x2 = x & y & z
     top = x1 | x2
@@ -102,7 +102,7 @@ end
 
 @testset "FaultTreeBDD_grad5" begin
     ft = FTree()
-    @repeated x1, y1, z1, x2, y2, z2
+    @repeated ft x1, y1, z1, x2, y2, z2
     xx1 = x1 & y1 & z1
     xx2 = x2 & y2 & z2
     top = xx1 | xx2
@@ -111,7 +111,7 @@ end
 
 @testset "FaultTreeBDD_grad6" begin
     ft = FTree()
-    @repeated a, b, c, d, e
+    @repeated ft a, b, c, d, e
     x1 = b & c & e
     x2 = b & d
     x3 = a & e
@@ -126,7 +126,7 @@ end
     end
     println(mcs(ft, top))
     println(smeas(ft, top))
-    println(bmeas(ft, top, env))
-    println(c1meas(ft, top, env))
-    println(c0meas(ft, top, env))
+    println(bmeas(ft, top, env=env))
+    println(c1meas(ft, top, env=env))
+    println(c0meas(ft, top, env=env))
 end

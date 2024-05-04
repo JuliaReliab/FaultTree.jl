@@ -9,28 +9,33 @@ A macro to define a basic event
 
 ### Example
 ```julia
-@basic x
+ft = FTree()
+@basic ft x
 ```
 =>
 ```julia
 begin
-    x = ftbasic(:x)
+    ft = FTree()
+    x = ftbasic(ft, :x)
 end
 ````
 
 ```julia
-@basic x, y
+ft = FTree()
+@basic ft x, y
 ```
 =>
 ```julia
 begin
-    x = ftbasic(:x)
-    y = ftbasic(:y)
+    ft = FTree()
+    x = ftbasic(ft, :x)
+    y = ftbasic(ft, :y)
 end
 ````
 
 ```julia
-@basic begin
+ft = FTree()
+@basic ft begin
     x
     y
 end
@@ -38,29 +43,30 @@ end
 =>
 ```julia
 begin
-    x = ftbasic(:x)
-    y = ftbasic(:y)
+    ft = FTree()
+    x = ftbasic(ft, :x)
+    y = ftbasic(ft, :y)
 end
 ````
 """
-macro basic(x)
+macro basic(ft, x)
     if Meta.isexpr(x, :tuple)
-        body = [_genbasic(x) for x = x.args]
+        body = [_genbasic(ft, x) for x = x.args]
         esc(Expr(:block, body...))
     elseif Meta.isexpr(x, :block)
-        body = [_genbasic(x) for x = x.args]
+        body = [_genbasic(ft, x) for x = x.args]
         esc(Expr(:block, body...))
     else
-        esc(_genbasic(x))
+        esc(_genbasic(ft, x))
     end
 end
 
-function _genbasic(x::Any)
+function _genbasic(ft, x::Any)
     x
 end
 
-function _genbasic(x::Symbol)
-    Expr(:(=), x, Expr(:call, :ftbasic, Expr(:quote, x)))
+function _genbasic(ft, x::Symbol)
+    Expr(:(=), x, Expr(:call, :ftbasic, ft, Expr(:quote, x)))
 end
 
 """
@@ -70,28 +76,33 @@ A macro to define a repeated event
 
 ### Example
 ```julia
-@repeated x
+ft = FTree()
+@repeated ft x
 ```
 =>
 ```julia
 begin
-    x = ftrepeated(:x)
+    ft = FTree()
+    x = ftrepeated(ft, :x)
 end
 ````
 
 ```julia
-@repeated x, y
+ft = FTree()
+@repeated ft x, y
 ```
 =>
 ```julia
 begin
-    x = ftrepeated(:x)
-    y = ftrepeated(:y)
+    ft = FTree()
+    x = ftrepeated(ft, :x)
+    y = ftrepeated(ft, :y)
 end
 ````
 
 ```julia
-@repeated begin
+ft = FTree()
+@repeated ft begin
     x
     y
 end
@@ -99,29 +110,30 @@ end
 =>
 ```julia
 begin
-    x = ftrepeated(:x)
-    y = ftrepeated(:y)
+    ft = FTree()
+    x = ftrepeated(ft, :x)
+    y = ftrepeated(ft, :y)
 end
 ````
 """
-macro repeated(x)
+macro repeated(ft, x)
     if Meta.isexpr(x, :tuple)
-        body = [_genrepeat(x) for x = x.args]
+        body = [_genrepeat(ft, x) for x = x.args]
         esc(Expr(:block, body...))
     elseif Meta.isexpr(x, :block)
-        body = [_genrepeat(x) for x = x.args]
+        body = [_genrepeat(ft, x) for x = x.args]
         esc(Expr(:block, body...))
     else
-        esc(_genrepeat(x))
+        esc(_genrepeat(ft, x))
     end
 end
 
-function _genrepeat(x::Any)
+function _genrepeat(ft, x::Any)
     x
 end
 
-function _genrepeat(x::Symbol)
-    Expr(:(=), x, Expr(:call, :ftrepeated, Expr(:quote, x)))
+function _genrepeat(ft, x::Symbol)
+    Expr(:(=), x, Expr(:call, :ftrepeated, ft, Expr(:quote, x)))
 end
 
 """
@@ -131,7 +143,8 @@ A macro to define parameters of FTevents
 
 ### Example
 ```julia
-env = @parameters begin
+ft = FTree()
+@parameters ft begin
     x = 0.1
     y = 0.2
 end
@@ -139,6 +152,7 @@ end
 =>
 ```julia
 env = Dict(:x => 0.1, :y => 0.2)
+ft.env = env
 ````
 """
 macro parameters(x)
@@ -163,4 +177,14 @@ function _genparam(x::Expr)
     else
         throw("Error")
     end
+end
+
+macro parameters(ft, x)
+    body = if Meta.isexpr(x, :block)
+        [_genparam(x) for x = x.args if typeof(x) == Expr]
+    else
+        [_genparam(x)]
+    end
+    expr = Expr(:(=), Expr(:., ft, Expr(:quote, :env)), Expr(:call, :Dict, body...))
+    esc(expr)
 end

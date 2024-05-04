@@ -108,14 +108,18 @@ The k-out-of-n gate is a generalized gate from AND/OR gates. It is often called 
 
 ![](./docs/figs/kn.png)
 
-## Building a fault tree
+## Fault tree analysis
 
-In the tool, the fault tree is built from bottom to up. First we define the events used in the tree:
+For the fault tree analysis, we first generate the context of fault tree which stores the information on events and BDD:
 ```julia
-@basic A
-@repeated B, C
+ft = FTree()
 ```
-The above is the Julia code to define the events. By using macros, we define three events having the symbols `A`, `B` and `C`. The event `A` is the basic event. The events `B` and `C` are the repeated events.
+In the tool, the fault tree is built from bottom to up. First we define the events used in the context:
+```julia
+@basic ft A
+@repeated ft B, C
+```
+The above is the Julia code to define the events. By using macros, we define three events having the symbols `A`, `B` and `C` in the context of `ft`. The event `A` is the basic event. The events `B` and `C` are the repeated events.
 
 The AND/OR gates can be defined by the common operations of Julia. The operators `&` and `*` correspond to AND gate.
 On the other hand, The operators `|` and `+` correspond to OR gate. The code to build the fault tree shown in the presious section is
@@ -123,34 +127,31 @@ On the other hand, The operators `|` and `+` correspond to OR gate. The code to 
 top = (A | B) & C
 ```
 
-## Fault tree analysis
-
-For the fault tree analysis, we first generate the context of fault tree which stores the information on events and BDD:
+To evaluate the top even probability, we define the environment to store the values (probabilities) of event occurrences. There are two ways to create the environment. First is to use the macro:
 ```julia
-ft = FTree()
-```
-Next we define the environment to store the values (probabilities) of event occurrences. There are two ways to create the environment. First is to use the macro:
-```julia
-env = @parameters begin
+@parameters ft begin
     A = 0.1
     B = 0.3
     C = 0.5
 end
 ```
-where A, B, C should be coincide with the symbols of events. In this example, we provide the probabilities 0.1, 0.3, 0.5 to the events A, B, C, and `env` is the identifier of the environemnt. Since the instance of environment is `Dict{Symbol,Tv} where Tv <: Number`, we can make it directly:
+where A, B, C should be coincide with the symbols of events. In this example, we provide the probabilities 0.1, 0.3, 0.5 to the events A, B, C, and `env` is the identifier of the environemnt.
+
+By using the context of FT and the environment, we compute the probability of top event:
+```julia
+prob(ft, top)
+```
+
+Alternatively, since environment is `Dict{Symbol,Tv} where Tv <: Number`, we can make it directly:
 ```julia
 env = Dict(
     :A => 0.1,
     :B => 0.3,
     :C => 0.5
 )
+prob(ft, top, env=env)
 ```
 Note that the key value should be symbols.
-
-By using the context of FT and the environment, we compute the probability of top event:
-```julia
-prob(ft, top, env)
-```
 
 ### MCS
 
@@ -161,7 +162,7 @@ mcs(ft, top)
 These two functions `prob` and `mcs` involve the procedure to make BDD from the given fault tree node. To avoid the redundancy of computation, we can also execute
 ```julia
 x = ftbdd!(ft, top)
-prob(ft, x, env)
+prob(ft, x)
 mcs(ft, x)
 ```
 In the above, the function `ftbdd!` is to create BDD and returns the corresponding BDD node. When a BDD node is used as arguments of `prob` and `mcs`, it can avoid to make BDD. Also, the function `cprob` computes the complement probability of top event.
@@ -170,19 +171,19 @@ Finally, we give the example:
 ```julia
 ft = FTree()
 
-@basic A
-@repeated B, C
+@basic ft A
+@repeated ft B, C
 
 top = (A | B) & C
 
-env = @parameters begin
+@parameters ft begin
     A = 0.1
     B = 0.3
     C = 0.5
 end
 
 x = ftbdd!(ft, top)
-prob(ft, x, env)
+prob(ft, x)
 mcs(ft, x)
 ```
 
@@ -217,22 +218,21 @@ provided that the system takes a status 0. This implies that the contribution of
 ```julia
 ft = FTree()
 
-@basic A
-@repeated B, C
+@basic ft A
+@repeated ft B, C
 
 top = (A | B) & C
 
-env = @parameters begin
+@parameters ft begin
     A = 0.9
     B = 0.98
     C = 0.89
 end
 
-x = ftbdd!(ft, top)
-prob(ft, x, env)
-mcs(ft, x)
+prob(ft, top)
+mcs(ft, top)
 smeas(ft, top)
-bmeas(ft, top, env)
-c1meas(ft, top, env)
-c0meas(ft, top, env)
+bmeas(ft, top)
+c1meas(ft, top)
+c0meas(ft, top)
 ```

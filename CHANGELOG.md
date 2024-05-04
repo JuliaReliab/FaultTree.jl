@@ -1,3 +1,7 @@
+# 0.7.0
+
+- interface has been changed.
+
 # 0.6.1
 
 - add computation of gradient

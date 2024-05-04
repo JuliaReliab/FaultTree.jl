@@ -1,10 +1,12 @@
 @testset "FaultTree1" begin
-    top = ftbasic(:x) & ftbasic(:x)
+    ft = FTree()
+    top = ftbasic(ft, :x) & ftbasic(ft, :x)
     println(top)
 end
 
 @testset "FaultTree1" begin
-    top = ftbasic(:x) & ftrepeated(:u) | ftbasic(:x)
+    ft = FTree()
+    top = ftbasic(ft, :x) & ftrepeated(ft, :u) | ftbasic(ft, :x)
     println(top)
 end
 

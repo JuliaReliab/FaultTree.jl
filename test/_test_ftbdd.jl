@@ -2,15 +2,15 @@ using DD.BDD
 
 @testset "FaultTreeBDD1" begin
     ft = FTree()
-    top = ftbasic(:x) & ftbasic(:x)
+    top = ftbasic(ft, :x) & ftbasic(ft, :x)
     f = ftbdd!(ft, top)
     println(todot(f))
 end
 
 @testset "FaultTreeBDD2" begin
     ft = FTree()
-    x = ftbasic(:x)
-    top = ftkofn(2, x, x, x)
+    x = ftbasic(ft, :x)
+    top = ftkofn(ft, 2, x, x, x)
     f = ftbdd!(ft, top)
     println(todot(f))
 end

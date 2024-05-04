@@ -15,11 +15,11 @@ Compute the gradient of probability of topevent
 - `env`: The dictionary to provide the probability of events
 - `bddcache`: The dictionary to store the intermediate computation results
 """
-function grad(ft::FTree, top::AbstractFTObject, env::Dict{Symbol,Tv}; bddcache = Dict()) where Tv <: Number
-    grad(ft, ftbdd!(ft, top), env, bddcache = bddcache)
+function grad(ft::FTree, top::AbstractFTObject; env::Dict{Symbol,Tv} = getenv(ft), bddcache = Dict()) where Tv <: Number
+    grad(ft, ftbdd!(ft, top), env = env, bddcache = bddcache)
 end
 
-function grad(ft::FTree, f::BDD.AbstractNode, env::Dict{Symbol,Tv}; bddcache = Dict()) where Tv <: Number
+function grad(ft::FTree, f::BDD.AbstractNode; env::Dict{Symbol,Tv} = getenv(ft), bddcache = Dict()) where Tv <: Number
     _prob(Val(:CDF), Val(:F), ft, f, env, bddcache)
     gradcache = Dict{BDD.NodeID,Tv}()
     gradevent = Dict{Symbol,Tv}()
@@ -42,11 +42,11 @@ Compute the gradient of complementary probability of topevent
 - `env`: The dictionary to provide the probability of events
 - `bddcache`: The dictionary to store the intermediate computation results
 """
-function cgrad(ft::FTree, top::AbstractFTObject, env::Dict{Symbol,Tv}; bddcache = Dict()) where Tv <: Number
-    cgrad(ft, ftbdd!(ft, top), env, bddcache = bddcache)
+function cgrad(ft::FTree, top::AbstractFTObject; env::Dict{Symbol,Tv} = getenv(ft), bddcache = Dict()) where Tv <: Number
+    cgrad(ft, ftbdd!(ft, top), env = env, bddcache = bddcache)
 end
 
-function cgrad(ft::FTree, f::BDD.AbstractNode, env::Dict{Symbol,Tv}; bddcache = Dict()) where Tv <: Number
+function cgrad(ft::FTree, f::BDD.AbstractNode; env::Dict{Symbol,Tv} = getenv(ft), bddcache = Dict()) where Tv <: Number
     _prob(Val(:CCDF), Val(:F), ft, f, env, bddcache)
     gradcache = Dict{BDD.NodeID,Tv}()
     gradevent = Dict{Symbol,Tv}()

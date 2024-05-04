@@ -1,43 +1,9 @@
 import DD.BDD
 
-export FTree
 export getbdd
 export nvars
 export ftbdd!
-
-"""
-    FTree
-
-A type for fault tree context.
-
-## Fields
-- `bdd`: An instance of BDD context
-- `nvars`: The number of BDD variables
-- `basic`: The dictionary of basic event. The value is the next index of basic event variable.
-- `repeated`: The dictionary of repeated event.
-- `desc`: A dictionary of descriptions
-"""
-mutable struct FTree
-    bdd::BDD.Forest
-    nvars::Int
-    basic::Dict{Symbol,Int}
-    basicinv::Dict{Symbol,Symbol}
-    repeated::Dict{Symbol,BDD.AbstractNode}
-    desc::Dict{AbstractFTEvent,String}
-    cache::Dict{AbstractFTObject,BDD.AbstractNode}
-
-    function FTree()
-        f = new()
-        f.bdd = BDD.bdd()
-        f.nvars = 0
-        f.basic = Dict{Symbol,Int}()
-        f.basicinv = Dict{Symbol,Symbol}()
-        f.repeated = Dict{Symbol,BDD.AbstractNode}()
-        f.desc = Dict{AbstractFTEvent,String}()
-        f.cache = Dict{AbstractFTObject,BDD.AbstractNode}()
-        f
-    end
-end
+export getenv
 
 """
    getbdd(ft)
@@ -64,6 +30,15 @@ Get an event symbol corresponding to a given BDD node.
 """
 function geteventsymbol(ft::FTree, x::BDD.AbstractNonTerminalNode)
     ft.basicinv[BDD.label(x)]
+end
+
+"""
+     getenv(ft)
+
+Get environment
+"""
+function getenv(ft::FTree)
+    ft.env
 end
 
 """
