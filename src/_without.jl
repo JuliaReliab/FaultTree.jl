@@ -49,6 +49,7 @@ function _minsol(b::BDD.Forest, f::BDD.AbstractNonTerminalNode, cache1::Dict{BDD
         h = BDD.get_zero(f)
         k = _minsol(b, g, cache1, cache2)
         u = _without(b, k, h, cache2)
+        # u = BDD.not(BDD.imp(k, h))
         v = _minsol(b, h, cache1, cache2)
         BDD.node!(b, f.header, v, u)
     end

@@ -65,6 +65,22 @@ function _genbasic(ft, x::Any)
     x
 end
 
+function _genbasic(ft, x::Expr)
+    if Meta.isexpr(x, :ref)
+        s = x.args[1]
+        i = x.args[2]
+        Expr(:block,
+            Expr(:(=), s, Expr(:call, :Dict)),
+            Expr(:for, Expr(:(=), :i, i),
+                Expr(:block,
+                    Expr(:(=), Expr(:ref, s, :i),
+                        Expr(:call, :ftbasic, ft,
+                            Expr(:call, :Symbol, Expr(:string, string(s), "[", :i, "]")))))))
+    else
+        x
+    end
+end
+
 function _genbasic(ft, x::Symbol)
     Expr(:(=), x, Expr(:call, :ftbasic, ft, Expr(:quote, x)))
 end
@@ -130,6 +146,22 @@ end
 
 function _genrepeat(ft, x::Any)
     x
+end
+
+function _genrepeat(ft, x::Expr)
+    if Meta.isexpr(x, :ref)
+        s = x.args[1]
+        i = x.args[2]
+        Expr(:block,
+            Expr(:(=), s, Expr(:call, :Dict)),
+            Expr(:for, Expr(:(=), :i, i),
+                Expr(:block,
+                    Expr(:(=), Expr(:ref, s, :i),
+                        Expr(:call, :ftrepeated, ft,
+                            Expr(:call, :Symbol, Expr(:string, string(s), "[", :i, "]")))))))
+    else
+        x
+    end
 end
 
 function _genrepeat(ft, x::Symbol)

@@ -122,6 +122,100 @@ end
     println(c0meas(ft, top, env=env))
 end
 
+@testset "euro1" begin
+    ft = FTree()
+    @repeated ft c[1:61]
+    g69 = c[1] & c[9]
+    g68 = c[1] & c[8]
+    g67 = c[1] & c[7]
+    g66 = c[1] & c[6]
+    g65 = c[1] & c[5]
+    g64 = c[1] & c[4]
+    g63 = c[1] & c[3]
+    g62 = c[1] & c[2]
+    g70 = g62 | c[10]
+    g71 = g63 | c[11]
+    g72 = g64 | c[12]
+    g73 = g65 | c[13]
+    g74 = g62 | c[14]
+    g75 = g63 | c[15]
+    g76 = g64 | c[16]
+    g77 = g65 | c[17]
+    g78 = g62 | c[18]
+    g79 = g63 | c[19]
+    g80 = g64 | c[20]
+    g81 = g65 | c[21]
+    g82 = g62 | c[22]
+    g83 = g63 | c[23]
+    g84 = g64 | c[24]
+    g85 = g65 | c[25]
+    g86 = g62 | c[26]
+    g87 = g63 | c[27]
+    g88 = g64 | c[28]
+    g89 = g65 | c[29]
+    g90 = g66 | c[30]
+    g91 = g68 | c[31]
+    g92 = g67 | c[32]
+    g93 = g69 | c[33]
+    g94 = g66 | c[34]
+    g95 = g68 | c[35]
+    g96 = g67 | c[36]
+    g97 = g69 | c[37]
+    g98 = g66 | c[38]
+    g99 = g68 | c[39]
+    g100 = g67 | c[40]
+    g101 = g69 | c[41]
+    g102 = g66 | c[42]
+    g103 = g68 | c[43]
+    g104 = g67 | c[44]
+    g105 = g69 | c[45]
+    g106 = ftkofn(ft, 3, g70, g71, g72, g73)
+    g107 = ftkofn(ft, 3, g74, g75, g76, g77)
+    g108 = ftkofn(ft, 3, g78, g79, g80, g81)
+    g109 = ftkofn(ft, 3, g82, g83, g84, g85)
+    g110 = ftkofn(ft, 3, g86, g87, g88, g89)
+    g111 = ftkofn(ft, 3, g94, g95, g96, g97)
+    g112 = ftkofn(ft, 3, g98, g99, g100, g101)
+    g113 = g90 & g92
+    g114 = g91 & g93
+    g115 = g102 & g104
+    g116 = g103 & g105
+    g117 = g113 | c[46]
+    g118 = g114 | c[47]
+    g119 = g107 | g108 | c[52]
+    g120 = g109 | g110
+    g121 = g66 | g117 | c[48]
+    g122 = g68 | g118 | c[49]
+    g123 = g67 | g117 | c[50]
+    g124 = g69 | g118 | c[51]
+    g125 = ftkofn(ft, 2, g121, g123, g122, g124)
+    g126 = g111 | g112 | g125 | c[53]
+    g127 = g115 & g120
+    g128 = g116 & g120
+    g129 = g62 | g127 | c[54]
+    g130 = g63 | g128 | c[55]
+    g131 = g64 | g127 | c[56]
+    g132 = g65 | g128 | c[57]
+    g133 = g62 | g129 | c[58]
+    g134 = g63 | g130 | c[59]
+    g135 = g64 | g131 | c[60]
+    g136 = g65 | g132 | c[61]
+    g137 = ftkofn(ft, 3, g133, g134, g135, g136)
+    g138 = g106 | g119 | g137
+    g139 = g62 | g66 | g117 | g129 | c[48]
+    g140 = g63 | g68 | g118 | g130 | c[49]
+    g141 = g64 | g67 | g117 | g131 | c[50]
+    g142 = g65 | g69 | g118 | g132 | c[51]
+    g143 = g139 & g140 & g141 & g142
+    g144 = g111 | g112 | g143 | c[53]
+    top = g126 & g138 & g144
+    @time bdd = ftbdd!(ft, top)
+    println(BDD.size(bdd))
+    @time result = mcs(ft, bdd)
+    println(size(result))
+    @time result2 = smeas(ft, bdd)
+end
+
 # @testset "Sample2" begin
 #     @ftree CM(midplane, cooling, power) begin
 #         @repeated begin
