@@ -205,7 +205,7 @@ function _genparam(x::Expr)
     if Meta.isexpr(x, :(=))
         label = x.args[1]
         value = x.args[2]
-        Expr(:call, :(=>), Expr(:quote, label), value)
+        Expr(:call, :(=>), Expr(:., label, Expr(:quote, :x)), value)
     else
         throw("Error")
     end

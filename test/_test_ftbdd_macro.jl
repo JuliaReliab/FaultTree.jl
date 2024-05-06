@@ -95,10 +95,9 @@ end
         let
             @repeated ft x, y
             top = x & x & y
-        end, env=@parameters begin
-            x = 0.9
-            y = 0.8
-        end)
+        end, env=Dict(
+            :x => 0.9,
+            :y => 0.8))
     println(p)
 end
 
